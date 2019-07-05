@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessRecord.dao.WsxdRemindRecordMapper">
+  <resultMap id="BaseResultMap" type="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBO">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="loan_bill_no" jdbcType="VARCHAR" property="loanBillNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="promise_date" jdbcType="DATE" property="promiseDate" />
+    <result column="promise_amt" jdbcType="DECIMAL" property="promiseAmt" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="phone_status" jdbcType="CHAR" property="phoneStatus" />
+    <result column="remind_date" jdbcType="TIMESTAMP" property="remindDate" />
+    <result column="is_remind" jdbcType="CHAR" property="isRemind" />
+    <result column="recording" jdbcType="VARCHAR" property="recording" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="odv" jdbcType="VARCHAR" property="odv" />
+    <result column="odv_name" jdbcType="VARCHAR" property="odvName" />
+    <result column="odv_group" jdbcType="VARCHAR" property="odvGroup" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBO">
+    <result column="measure" jdbcType="LONGVARCHAR" property="measure" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, loan_bill_no, create_time, status, promise_date, promise_amt, phone, phone_status, 
+    remind_date, is_remind, recording, source, odv, odv_name odv_group, create_date, create_by, update_by, 
+    update_date, remarks, del_flag
+  </sql>
+  <sql id="Blob_Column_List">
+    measure
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBOExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from wsxd_remind_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBOExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from wsxd_remind_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBOExample">
+    delete from wsxd_remind_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBO">
+    insert into wsxd_remind_record (id, loan_bill_no, create_time, 
+      status, promise_date, promise_amt, 
+      phone, phone_status, remind_date, 
+      is_remind, recording, source, odv, odv_name
+      odv_group, create_date, create_by, 
+      update_by, update_date, remarks, 
+      del_flag, measure)
+    values (#{id,jdbcType=VARCHAR}, #{loanBillNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{promiseDate,jdbcType=DATE}, #{promiseAmt,jdbcType=DECIMAL}, 
+      #{phone,jdbcType=VARCHAR}, #{phoneStatus,jdbcType=CHAR}, #{remindDate,jdbcType=TIMESTAMP}, 
+      #{isRemind,jdbcType=CHAR}, #{recording,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{odv,jdbcType=VARCHAR}, #{odvName,jdbcType=VARCHAR}, 
+      #{odvGroup,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=CHAR}, #{measure,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBO">
+    insert into wsxd_remind_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="loanBillNo != null">
+        loan_bill_no,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="promiseDate != null">
+        promise_date,
+      </if>
+      <if test="promiseAmt != null">
+        promise_amt,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="phoneStatus != null">
+        phone_status,
+      </if>
+      <if test="remindDate != null">
+        remind_date,
+      </if>
+      <if test="isRemind != null">
+        is_remind,
+      </if>
+      <if test="recording != null">
+        recording,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="odv != null">
+        odv,
+      </if>
+      <if test="odvName != null">
+        odv_name,
+      </if>
+      <if test="odvGroup != null">
+        odv_group,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="measure != null">
+        measure,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="loanBillNo != null">
+        #{loanBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="promiseDate != null">
+        #{promiseDate,jdbcType=DATE},
+      </if>
+      <if test="promiseAmt != null">
+        #{promiseAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneStatus != null">
+        #{phoneStatus,jdbcType=CHAR},
+      </if>
+      <if test="remindDate != null">
+        #{remindDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRemind != null">
+        #{isRemind,jdbcType=CHAR},
+      </if>
+      <if test="recording != null">
+        #{recording,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="odv != null">
+        #{odv,jdbcType=VARCHAR},
+      </if>
+      <if test="odvName != null">
+        #{odvName,jdbcType=VARCHAR},
+      </if>
+      <if test="odvGroup != null">
+        #{odvGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="measure != null">
+        #{measure,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBOExample" resultType="java.lang.Long">
+    select count(*) from wsxd_remind_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update wsxd_remind_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loanBillNo != null">
+        loan_bill_no = #{record.loanBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.promiseDate != null">
+        promise_date = #{record.promiseDate,jdbcType=DATE},
+      </if>
+      <if test="record.promiseAmt != null">
+        promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneStatus != null">
+        phone_status = #{record.phoneStatus,jdbcType=CHAR},
+      </if>
+      <if test="record.remindDate != null">
+        remind_date = #{record.remindDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isRemind != null">
+        is_remind = #{record.isRemind,jdbcType=CHAR},
+      </if>
+      <if test="record.recording != null">
+        recording = #{record.recording,jdbcType=VARCHAR},
+      </if>
+      <if test="record.source != null">
+        source = #{record.source,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odv != null">
+        odv = #{record.odv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odvName != null">
+        odvName = #{record.odvName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odvGroup != null">
+        odv_group = #{record.odvGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createBy != null">
+        create_by = #{record.createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateBy != null">
+        update_by = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null">
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.delFlag != null">
+        del_flag = #{record.delFlag,jdbcType=CHAR},
+      </if>
+      <if test="record.measure != null">
+        measure = #{record.measure,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update wsxd_remind_record
+    set id = #{record.id,jdbcType=VARCHAR},
+      loan_bill_no = #{record.loanBillNo,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR},
+      promise_date = #{record.promiseDate,jdbcType=DATE},
+      promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      phone_status = #{record.phoneStatus,jdbcType=CHAR},
+      remind_date = #{record.remindDate,jdbcType=TIMESTAMP},
+      is_remind = #{record.isRemind,jdbcType=CHAR},
+      recording = #{record.recording,jdbcType=VARCHAR},
+      source = #{record.source,jdbcType=VARCHAR},
+      odv = #{record.odv,jdbcType=VARCHAR},
+      odv_name = #{record.odvName,jdbcType=VARCHAR},
+      odv_group = #{record.odvGroup,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      create_by = #{record.createBy,jdbcType=VARCHAR},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      del_flag = #{record.delFlag,jdbcType=CHAR},
+      measure = #{record.measure,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update wsxd_remind_record
+    set id = #{record.id,jdbcType=VARCHAR},
+      loan_bill_no = #{record.loanBillNo,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR},
+      promise_date = #{record.promiseDate,jdbcType=DATE},
+      promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      phone_status = #{record.phoneStatus,jdbcType=CHAR},
+      remind_date = #{record.remindDate,jdbcType=TIMESTAMP},
+      is_remind = #{record.isRemind,jdbcType=CHAR},
+      recording = #{record.recording,jdbcType=VARCHAR},
+      source = #{record.source,jdbcType=VARCHAR},
+      odv = #{record.odv,jdbcType=VARCHAR},
+      odv_name = #{record.odvName,jdbcType=VARCHAR},
+      odv_group = #{record.odvGroup,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      create_by = #{record.createBy,jdbcType=VARCHAR},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      del_flag = #{record.delFlag,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <select id="findAllCaseStatusFromSysDict" resultType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.SysDictBO">
+    select
+      id,
+      value,
+      label,
+      type
+    from
+      sys_dict
+    where
+      type = "caseType"
+      and del_flag = "0"
+  </select>
+  
+  <select id="findAllPhoneStatusFromSysDict" resultType="com.plcs.web.wsxd.businessoperation.businessRecord.entity.SysDictBO">
+    select
+      id,
+      value,
+      label,
+      type
+    from
+      sys_dict
+    where
+      type = "phone_status"
+      and del_flag = "0"
+  </select>
+
+  <select id="findGroupNameByUserName" resultType="WsxdAllocateGroup">
+    select
+      *
+    from
+      wsxd_allocate_group
+    where
+      odvs_name like concat('%', #{userName}, '%')
+  </select>
+</mapper>

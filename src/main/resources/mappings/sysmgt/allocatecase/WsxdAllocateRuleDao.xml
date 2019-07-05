@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.sysmgt.allocatecase.dao.WsxdAllocateRuleDao">
+    
+	<sql id="wsxdAllocateRuleColumns">
+		a.id AS "id",
+		a.num AS "num",
+		a.rule_describe AS "ruleDescribe",
+		a.sort_key AS "sortKey",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdAllocateRuleJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdAllocateRule">
+		SELECT 
+			<include refid="wsxdAllocateRuleColumns"/>
+		FROM wsxd_allocate_rule a
+		<include refid="wsxdAllocateRuleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdAllocateRule">
+		SELECT 
+			<include refid="wsxdAllocateRuleColumns"/>
+		FROM wsxd_allocate_rule a
+		<include refid="wsxdAllocateRuleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.num ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdAllocateRule">
+		SELECT 
+			<include refid="wsxdAllocateRuleColumns"/>
+		FROM wsxd_allocate_rule a
+		<include refid="wsxdAllocateRuleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_allocate_rule(
+			id,
+			num,
+			rule_describe,
+			sort_key,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{num},
+			#{ruleDescribe},
+			#{sortKey},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_allocate_rule SET 	
+			num = #{num},
+			rule_describe = #{ruleDescribe},
+			sort_key = #{sortKey},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_allocate_rule SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

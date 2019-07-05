@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.sysmgt.allocatecase.dao.WsxdAllocateGroupHstDao">
+    
+	<sql id="wsxdAllocateGroupHstColumns">
+		a.id AS "id",
+		a.group_id AS "groupId",
+		a.group_name AS "groupName",
+		a.odvs AS "odvs",
+		a.odvs_name AS "odvsName",
+		a.min_overdue_day AS "minOverdueDay",
+		a.max_overdue_day AS "maxOverdueDay",
+		a.status AS "status",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdAllocateGroupHstJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdAllocateGroupHst">
+		SELECT 
+			<include refid="wsxdAllocateGroupHstColumns"/>
+		FROM wsxd_allocate_group_hst a
+		<include refid="wsxdAllocateGroupHstJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdAllocateGroupHst">
+		SELECT 
+			<include refid="wsxdAllocateGroupHstColumns"/>
+		FROM wsxd_allocate_group_hst a
+		<include refid="wsxdAllocateGroupHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdAllocateGroupHst">
+		SELECT 
+			<include refid="wsxdAllocateGroupHstColumns"/>
+		FROM wsxd_allocate_group_hst a
+		<include refid="wsxdAllocateGroupHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT wsxd_allocate_group_hst
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> id, </if>
+			<if test="groupId != null"> group_id, </if>
+			<if test="groupName != null"> group_name, </if>
+			<if test="odvs != null"> odvs, </if>
+			<if test="odvsName != null"> odvs_name, </if>
+			<if test="minOverdueDay != null"> min_overdue_day, </if>
+			<if test="maxOverdueDay != null"> max_overdue_day, </if>
+			<if test="status != null"> status, </if>
+			<if test="createBy != null"> create_by, </if>
+			<if test="createDate != null"> create_date, </if>
+			<if test="updateBy != null"> update_by, </if>
+			<if test="updateDate != null"> update_date, </if>
+			<if test="remarks != null"> remarks, </if>
+			<if test="delFlag != null"> del_flag, </if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> #{id}, </if>
+			<if test="groupId != null"> #{groupId}, </if>
+			<if test="groupName != null"> #{groupName}, </if>
+			<if test="odvs != null"> #{odvs}, </if>
+			<if test="odvsName != null"> #{odvsName}, </if>
+			<if test="minOverdueDay != null"> #{minOverdueDay}, </if>
+			<if test="maxOverdueDay != null"> #{maxOverdueDay}, </if>
+			<if test="status != null"> #{status}, </if>
+			<if test="createBy != null"> #{createBy.id}, </if>
+			<if test="createDate != null"> #{createDate}, </if>
+			<if test="updateBy != null"> #{updateBy.id}, </if>
+			<if test="updateDate != null"> #{updateDate}, </if>
+			<if test="remarks != null"> #{remarks}, </if>
+			<if test="delFlag != null"> #{delFlag}, </if>
+		</trim>
+	</insert>
+
+	<update id="update">
+		UPDATE wsxd_allocate_group_hst SET 	
+			group_id = #{groupId},
+			group_name = #{groupName},
+			odvs = #{odvs},
+			odvs_name = #{odvsName},
+			min_overdue_day = #{minOverdueDay},
+			max_overdue_day = #{maxOverdueDay},
+			status = #{status},
+			update_by = #{updateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_allocate_group_hst SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

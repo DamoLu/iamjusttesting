@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdRepayHstDao">
+    
+	<sql id="wsxdRepayHstColumns">
+		a.id AS "id",
+		a.dw_id AS "dwId",
+		a.app_no AS "appNo",
+		a.loan_bill_no AS "loanBillNo",
+		a.repay_date AS "repayDate",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.fee AS "fee",
+		a.penalty AS "penalty",
+		a.compound AS "compound",
+		a.late_fee AS "lateFee",
+		a.prepay_fee AS "prepayFee",
+		a.pay_account_fee AS "payAccountFee",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdRepayHstJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdRepayHst">
+		SELECT 
+			<include refid="wsxdRepayHstColumns"/>
+		FROM wsxd_repay_hst a
+		<include refid="wsxdRepayHstJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdRepayHst">
+		SELECT 
+			<include refid="wsxdRepayHstColumns"/>
+		FROM wsxd_repay_hst a
+		<include refid="wsxdRepayHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdRepayHst">
+		SELECT 
+			<include refid="wsxdRepayHstColumns"/>
+		FROM wsxd_repay_hst a
+		<include refid="wsxdRepayHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_repay_hst(
+			id,
+			dw_id,
+			app_no,
+			loan_bill_no,
+			repay_date,
+			principal,
+			interest,
+			fee,
+			penalty,
+			compound,
+			late_fee,
+			prepay_fee,
+			pay_account_fee,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{dwId},
+			#{appNo},
+			#{loanBillNo},
+			#{repayDate},
+			#{principal},
+			#{interest},
+			#{fee},
+			#{penalty},
+			#{compound},
+			#{lateFee},
+			#{prepayFee},
+			#{payAccountFee},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_repay_hst SET 	
+			dw_id = #{dwId},
+			app_no = #{appNo},
+			loan_bill_no = #{loanBillNo},
+			repay_date = #{repayDate},
+			principal = #{principal},
+			interest = #{interest},
+			fee = #{fee},
+			penalty = #{penalty},
+			compound = #{compound},
+			late_fee = #{lateFee},
+			prepay_fee = #{prepayFee},
+			pay_account_fee = #{payAccountFee},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_repay_hst SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectByLoanBillNo" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.RepayHstVO">
+		SELECT a.loan_bill_no AS loanBillNo, a.repay_date AS repayDate,
+     	  SUM((IFNULL(a.principal,0) + IFNULL(a.interest,0) + IFNULL(a.fee,0) + IFNULL(a.penalty,0) +
+          IFNULL(a.compound,0) + IFNULL(a.late_fee,0) + IFNULL(a.prepay_fee ,0)+ IFNULL(a.pay_account_fee,0))) AS repayMoney
+		FROM wsxd_repay_hst a
+		WHERE a.loan_bill_no = #{loanBillNo} AND a.del_flag = '0'
+		GROUP BY a.repay_date
+	</select>
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.sysmgt.allocatecase.dao.WsxdAllocateGroupScopeDao">
+    
+	<sql id="wsxdAllocateGroupScopeColumns">
+		a.id AS "id",
+		a.group_name AS "groupName",
+		a.group_id AS "groupId",
+		a.app_org AS "appOrg",
+		a.app_org_name AS "appOrgName",
+		a.department_id AS "departmentId",
+		a.department_name AS "departmentName",
+		a.has_common_pool AS "hasCommonPool",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdAllocateGroupScopeJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdAllocateGroupScope">
+		SELECT 
+			<include refid="wsxdAllocateGroupScopeColumns"/>
+		FROM wsxd_allocate_group_scope a
+		<include refid="wsxdAllocateGroupScopeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdAllocateGroupScope">
+		SELECT 
+			<include refid="wsxdAllocateGroupScopeColumns"/>
+		FROM wsxd_allocate_group_scope a
+		<include refid="wsxdAllocateGroupScopeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdAllocateGroupScope">
+		SELECT 
+			<include refid="wsxdAllocateGroupScopeColumns"/>
+		FROM wsxd_allocate_group_scope a
+		<include refid="wsxdAllocateGroupScopeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_allocate_group_scope(
+			id,
+			group_name,
+			group_id,
+			app_org,
+			app_org_name,
+			department_id,
+			department_name,
+			has_common_pool,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{groupName},
+			#{groupId},
+			#{appOrg},
+			#{appOrgName},
+			#{departmentId},
+			#{departmentName},
+			#{hasCommonPool},
+			#{createBy},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+	<insert id="batchInsertAllocateGroupScope" parameterType="java.util.List">
+		INSERT INTO wsxd_allocate_group_scope(
+			id,
+			group_name,
+			group_id,
+			app_org,
+			app_org_name,
+			department_id,
+			department_name,
+			has_common_pool,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		)VALUES
+		<foreach collection="list" item="pojo" index="index" separator=",">
+			(
+			#{pojo.id},
+			#{pojo.groupName},
+			#{pojo.groupId},
+			#{pojo.appOrg},
+			#{pojo.appOrgName},
+			#{pojo.departmentId},
+			#{pojo.departmentName},
+			#{pojo.hasCommonPool},
+			#{pojo.createBy.id},
+			#{pojo.createDate},
+			#{pojo.updateBy.id},
+			#{pojo.updateDate},
+			#{pojo.remarks},
+			#{pojo.delFlag}
+			)
+		</foreach>
+	</insert>
+
+	<update id="update">
+		UPDATE wsxd_allocate_group_scope SET 	
+			group_name = #{groupName},
+			group_id = #{groupId},
+			app_org = #{appOrg},
+			app_org_name = #{appOrgName},
+			department_id = #{departmentId},
+			department_name = #{departmentName},
+			has_common_pool = #{hasCommonPool},
+			update_by = #{updateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_allocate_group_scope SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteByGroupId">
+		DELETE FROM wsxd_allocate_group_scope
+		WHERE group_id = #{groupId}
+	</delete>
+</mapper>

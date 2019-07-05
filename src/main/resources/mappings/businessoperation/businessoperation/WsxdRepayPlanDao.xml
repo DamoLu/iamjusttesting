@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdRepayPlanDao">
+    
+	<sql id="wsxdRepayPlanColumns">
+		a.loan_pmt_due_date AS "loanPmtDueDate",
+		a.current_term AS "currentTerm",
+		a.loan_term_prin AS "loanTermPrin",
+		a.loan_term_int AS "loanTermInt",
+		a.loan_term_fee AS "loanTermFee",
+		a.account_fee AS "accountFee",
+		a.overdue_late_fee AS "overdueLateFee",
+		a.overdue_penalty AS "overduePenalty",
+		a.overdue_compound AS "overdueCompound",
+		a.principal AS "principal",
+		a.id AS "id",
+		a.interest AS "interest",
+		a.fee AS "fee",
+		a.pay_account_fee AS "payAccountFee",
+		a.late_fee AS "lateFee",
+		a.penalty AS "penalty",
+		a.compound AS "compound",
+		a.app_no AS "appNo",
+		a.loan_bill_no AS "loanBillNo",
+		a.present_date AS "presentDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdRepayPlanJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdRepayPlan">
+		SELECT 
+			<include refid="wsxdRepayPlanColumns"/>
+		FROM wsxd_repay_plan a
+		<include refid="wsxdRepayPlanJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdRepayPlan">
+		SELECT 
+			<include refid="wsxdRepayPlanColumns"/>
+		FROM wsxd_repay_plan a
+		<include refid="wsxdRepayPlanJoins"/>
+		<where>
+			<if test="loanBillNo != null">a.loan_bill_no = #{loanBillNo}</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdRepayPlan">
+		SELECT 
+			<include refid="wsxdRepayPlanColumns"/>
+		FROM wsxd_repay_plan a
+		<include refid="wsxdRepayPlanJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_repay_plan(
+			del_flag
+		) VALUES (
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_repay_plan SET 	
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_repay_plan SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdAllocateHstDao">
+
+	<sql id="wsxdAllocateHstColumns">
+		a.id AS "id",
+		a.loan_bill_no AS "loanBillNo",
+		a.app_org AS "appOrg",
+		a.app_org_name AS "appOrgName",
+		a.department_id AS "departmentId",
+		a.department_name AS "departmentName",
+		a.has_common_pool AS "hasCommonPool",
+		a.customer_id_no AS "customerIdNo",
+		a.customer_name AS "customerName",
+		a.overdue_days AS "overdueDays",
+		a.odv AS "odv",
+		a.odv_name AS "odvName",
+		a.old_odv AS "oldOdv",
+		a.old_odv_name AS "oldOdvName",
+		a.old_odv_group AS "oldOdvGroup",
+		a.old_odv_group_name AS "oldOdvGroupName",
+		a.odv_group AS "odvGroup",
+		a.odv_group_name AS "odvGroupName",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.allocate_type AS "allocateType",
+		c.name AS "createByUser",
+		a.create_date AS "createDate",
+		a.update_by AS "updateByUser",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		d.label AS "loanOrgin"
+	</sql>
+	
+	<sql id="wsxdAllocateHstJoins">
+		LEFT JOIN wsxd_case b ON a.loan_bill_no = b.loan_bill_no
+		LEFT JOIN sys_user c ON a.create_by = c.login_name
+		LEFT JOIN sys_dict d ON b.loan_orgin = d.value AND d.type = 'loan_orgin'
+	</sql>
+    
+	<select id="get" resultType="WsxdAllocateHst">
+		SELECT 
+			<include refid="wsxdAllocateHstColumns"/>
+		FROM wsxd_allocate_hst a
+		<include refid="wsxdAllocateHstJoins"/>
+		WHERE a.id = #{id}
+		GROUP BY a.id
+	</select>
+	
+	<select id="findList" resultType="WsxdAllocateHst">
+		SELECT 
+			<include refid="wsxdAllocateHstColumns"/>
+		FROM wsxd_allocate_hst a
+		<include refid="wsxdAllocateHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="appOrg != null and appOrg != ''">
+				AND a.app_org = #{appOrg}
+			</if>
+			<if test="departmentId != null and departmentId != ''">
+				AND a.department_id = #{departmentId}
+			</if>
+			<if test="loanOrgin != null and loanOrgin != ''">
+				AND b.loan_orgin = #{loanOrgin}
+			</if>
+			<if test="loanBillNo != null and loanBillNo != ''">
+				AND a.loan_bill_no = #{loanBillNo}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND b.customer_name = #{customerName}
+			</if>
+			<if test="minOverdueDays != null and minOverdueDays != ''">
+				AND a.overdue_days &gt;= #{minOverdueDays}
+			</if>
+			<if test="maxOverdueDays != null and maxOverdueDays != ''">
+				AND a.overdue_days &lt;= #{maxOverdueDays}
+			</if>
+			<if test="oldOdvName != null and oldOdvName != ''">
+				AND a.old_odv_name = #{oldOdvName}
+			</if>
+			<if test="odvName != null and odvName != ''">
+				AND a.odv_name = #{odvName}
+			</if>
+			<if test="startOperateDate != null and startOperateDate != ''">
+				AND a.update_date >= #{startOperateDate}
+			</if>
+			<if test="endOperateDate != null and endOperateDate != ''">
+				AND a.update_date &lt;= #{endOperateDate}
+			</if>
+		</where>
+		GROUP BY a.id
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.customer_id_no DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdAllocateHst">
+		SELECT 
+			<include refid="wsxdAllocateHstColumns"/>
+		FROM wsxd_allocate_hst a
+		<include refid="wsxdAllocateHstJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		GROUP BY a.id
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_allocate_hst(
+			id,
+			loan_bill_no,
+			app_org,
+			app_org_name,
+			department_id,
+			department_name,
+			has_common_pool,
+			customer_id_no,
+			customer_name,
+			overdue_days,
+			odv,
+			odv_name,
+			old_odv,
+			old_odv_name,
+			old_odv_group,
+			old_odv_group_name,
+			odv_group,
+			odv_group_name,
+			start_date,
+			end_date,
+			allocate_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{loanBillNo},
+			#{appOrg},
+			#{appOrgName},
+			#{departmentId},
+			#{departmentName},
+			#{hasCommonPool},
+			#{customerIdNo},
+			#{customerName},
+			#{overdueDays},
+			#{odv},
+			#{odvName},
+			#{oldOdv},
+			#{oldOdvName},
+			#{oldOdvGroup},
+			#{oldOdvGroupName},
+			#{odvGroup},
+			#{odvGroupName},
+			#{startDate},
+			#{endDate},
+			#{allocateType},
+			#{createBy},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_allocate_hst SET 	
+			loan_bill_no = #{loanBillNo},
+			app_org = #{appOrg},
+			app_org_name = #{appOrgName},
+			department_id = #{departmentId},
+			department_name = #{departmentName},
+			has_common_pool = #{hasCommonPool},
+			customer_id_no = #{customerIdNo},
+			customer_name = #{customerName},
+			overdue_days = #{overdueDays},
+			odv = #{odv},
+			odv_name = #{odvName},
+			old_odv = #{oldOdv},
+			old_odv_name = #{oldOdvName},
+			old_odv_group = #{oldOdvGroup},
+			old_odv_group_name = #{oldOdvGroupName},
+			odv_group = #{odvGroup},
+			odv_group_name = #{odvGroupName},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			allocate_type = #{allocateType},
+			update_by = #{updateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_allocate_hst SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectOdvList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.OdvOV">
+		SELECT odv,odv_name AS odvName
+		FROM wsxd_allocate_hst
+		WHERE del_flag= '0'
+		GROUP BY odv
+	</select>
+
+	<select id="selectDepartmentList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.DepartmentVO">
+		SELECT department_id AS departmentId, department_name AS departmentName
+		FROM wsxd_allocate_hst
+		WHERE del_flag = '0' AND department_name IS NOT NULL
+		GROUP BY department_id
+	</select>
+
+	<select id="selectLoanOrginList" resultType="java.lang.String">
+		SELECT loan_orgin AS loanOrgin
+		FROM wsxd_case
+		WHERE del_flag = '0' AND loan_orgin IS NOT NULL
+		GROUP BY loan_orgin
+	</select>
+
+	<select id="selectLastAllocate" parameterType="java.lang.String" resultType="WsxdAllocateHst">
+		SELECT
+			*
+		FROM
+			wsxd_allocate_hst a
+		WHERE
+			a.loan_bill_no = #{loanBillNo}
+		ORDER BY a.start_date DESC limit 1
+	</select>
+
+	<insert id="insertSelective">
+		INSERT INTO wsxd_allocate_hst
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> id, </if>
+			<if test="loanBillNo != null"> loan_bill_no, </if>
+			<if test="appOrg != null"> app_org, </if>
+			<if test="appOrgName != null"> app_org_name, </if>
+			<if test="departmentId != null"> department_id, </if>
+			<if test="departmentName != null"> department_name, </if>
+			<if test="hasCommonPool != null"> has_common_pool, </if>
+			<if test="customerIdNo != null"> customer_id_no, </if>
+			<if test="customerName != null"> customer_name, </if>
+			<if test="overdueDays != null"> overdue_days, </if>
+			<if test="odv != null"> odv, </if>
+			<if test="odvName != null"> odv_name, </if>
+			<if test="oldOdv != null"> old_odv, </if>
+			<if test="oldOdvName != null"> old_odv_name, </if>
+			<if test="oldOdvGroup != null"> old_odv_group, </if>
+			<if test="oldOdvGroupName != null"> old_odv_group_name, </if>
+			<if test="odvGroup != null"> odv_group, </if>
+			<if test="odvGroupName != null"> odv_group_name, </if>
+			<if test="startDate != null"> start_date, </if>
+			<if test="endDate != null"> end_date, </if>
+			<if test="allocateType != null"> allocate_type, </if>
+			<if test="createByUser != null"> create_by, </if>
+			<if test="createDate != null"> create_date, </if>
+			<if test="updateByUser != null"> update_by, </if>
+			<if test="updateDate != null"> update_date, </if>
+			<if test="remarks != null"> remarks, </if>
+			<if test="delFlag != null"> del_flag, </if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> #{id}, </if>
+			<if test="loanBillNo != null"> #{loanBillNo}, </if>
+			<if test="appOrg != null"> #{appOrg}, </if>
+			<if test="appOrgName != null"> #{appOrgName}, </if>
+			<if test="departmentId != null"> #{departmentId}, </if>
+			<if test="departmentName != null"> #{departmentName}, </if>
+			<if test="hasCommonPool != null"> #{hasCommonPool}, </if>
+			<if test="customerIdNo != null"> #{customerIdNo}, </if>
+			<if test="customerName != null"> #{customerName}, </if>
+			<if test="overdueDays != null"> #{overdueDays}, </if>
+			<if test="odv != null"> #{odv}, </if>
+			<if test="odvName != null"> #{odvName}, </if>
+			<if test="oldOdv != null"> #{oldOdv}, </if>
+			<if test="oldOdvName != null"> #{oldOdvName}, </if>
+			<if test="oldOdvGroup != null"> #{oldOdvGroup}, </if>
+			<if test="oldOdvGroupName != null"> #{oldOdvGroupName}, </if>
+			<if test="odvGroup != null"> #{odvGroup}, </if>
+			<if test="odvGroupName != null"> #{odvGroupName}, </if>
+			<if test="startDate != null"> #{startDate}, </if>
+			<if test="endDate != null"> #{endDate}, </if>
+			<if test="allocateType != null"> #{allocateType}, </if>
+			<if test="createByUser != null"> #{createByUser}, </if>
+			<if test="createDate != null"> #{createDate}, </if>
+			<if test="updateByUser != null"> #{updateByUser}, </if>
+			<if test="updateDate != null"> #{updateDate}, </if>
+			<if test="remarks != null"> #{remarks}, </if>
+			<if test="delFlag != null"> #{delFlag}, </if>
+		</trim>
+	</insert>
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.smsplatform.smstemplatemgt.dao.WsxdSmsTemplateDao">
+    
+	<sql id="wsxdSmsTemplateColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.min_overdue_day AS "minOverdueDay",
+		a.max_overdue_day AS "maxOverdueDay",
+		a.content AS "content",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdSmsTemplateJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdSmsTemplate">
+		SELECT 
+			<include refid="wsxdSmsTemplateColumns"/>
+		FROM wsxd_sms_template a
+		<include refid="wsxdSmsTemplateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdSmsTemplate">
+		SELECT 
+			<include refid="wsxdSmsTemplateColumns"/>
+		FROM wsxd_sms_template a
+		<include refid="wsxdSmsTemplateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="minOverdueDay != null and minOverdueDay != ''">
+				AND a.min_overdue_day = #{minOverdueDay}
+			</if>
+			<if test="maxOverdueDay != null and maxOverdueDay != ''">
+				AND a.max_overdue_day = #{maxOverdueDay}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdSmsTemplate">
+		SELECT 
+			<include refid="wsxdSmsTemplateColumns"/>
+		FROM wsxd_sms_template a
+		<include refid="wsxdSmsTemplateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_sms_template(
+			id,
+			name,
+			type,
+			min_overdue_day,
+			max_overdue_day,
+			content,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{type},
+			#{minOverdueDay},
+			#{maxOverdueDay},
+			#{content},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_sms_template SET 	
+			name = #{name},
+			type = #{type},
+			min_overdue_day = #{minOverdueDay},
+			max_overdue_day = #{maxOverdueDay},
+			content = #{content},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_sms_template SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

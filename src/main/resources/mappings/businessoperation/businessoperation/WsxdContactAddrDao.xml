@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdContactAddrDao">
+
+    <resultMap id="AllColumnMap" type="com.plcs.web.wsxd.businessoperation.businessoperation.entity.WsxdContactAddr">
+        <result column="id" property="id"/>
+        <result column="customer_id_no" property="customerIdNo"/>
+        <result column="name" property="name"/>
+        <result column="relation" property="relation"/>
+        <result column="type" property="type"/>
+        <result column="data_source" property="dataSource"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="detail" property="detail"/>
+        <result column="remark" property="remark"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <sql id="all_column">
+        id,
+        customer_id_no,
+        name,
+        relation,
+        type,
+        data_source,
+        province,
+        city,
+        district,
+        detail,
+        remark,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO wsxd_contact_addr
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> id, </if>
+            <if test="pojo.customerIdNo != null"> customer_id_no, </if>
+            <if test="pojo.name != null"> name, </if>
+            <if test="pojo.relation != null"> relation, </if>
+            <if test="pojo.type != null"> type, </if>
+            <if test="pojo.dataSource != null"> data_source, </if>
+            <if test="pojo.province != null"> province, </if>
+            <if test="pojo.city != null"> city, </if>
+            <if test="pojo.district != null"> district, </if>
+            <if test="pojo.detail != null"> detail, </if>
+            <if test="pojo.remark != null"> remark, </if>
+            <if test="pojo.createBy != null"> create_by, </if>
+            <if test="pojo.createDate != null"> create_date, </if>
+            <if test="pojo.updateBy != null"> update_by, </if>
+            <if test="pojo.updateDate != null"> update_date, </if>
+            <if test="pojo.remarks != null"> remarks, </if>
+            <if test="pojo.delFlag != null"> del_flag, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> #{pojo.id}, </if>
+            <if test="pojo.customerIdNo != null"> #{pojo.customerIdNo}, </if>
+            <if test="pojo.name != null"> #{pojo.name}, </if>
+            <if test="pojo.relation != null"> #{pojo.relation}, </if>
+            <if test="pojo.type != null"> #{pojo.type}, </if>
+            <if test="pojo.dataSource != null"> #{pojo.dataSource}, </if>
+            <if test="pojo.province != null"> #{pojo.province}, </if>
+            <if test="pojo.city != null"> #{pojo.city}, </if>
+            <if test="pojo.district != null"> #{pojo.district}, </if>
+            <if test="pojo.detail != null"> #{pojo.detail}, </if>
+            <if test="pojo.remark != null"> #{pojo.remark}, </if>
+            <if test="pojo.createBy != null"> #{pojo.createBy}, </if>
+            <if test="pojo.createDate != null"> #{pojo.createDate}, </if>
+            <if test="pojo.updateBy != null"> #{pojo.updateBy}, </if>
+            <if test="pojo.updateDate != null"> #{pojo.updateDate}, </if>
+            <if test="pojo.remarks != null"> #{pojo.remarks}, </if>
+            <if test="pojo.delFlag != null"> #{pojo.delFlag}, </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        INSERT INTO wsxd_contact_addr(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{pojo.id},
+            #{pojo.customerIdNo},
+            #{pojo.name},
+            #{pojo.relation},
+            #{pojo.type},
+            #{pojo.dataSource},
+            #{pojo.province},
+            #{pojo.city},
+            #{pojo.district},
+            #{pojo.detail},
+            #{pojo.remark},
+            #{pojo.createBy},
+            #{pojo.createDate},
+            #{pojo.updateBy},
+            #{pojo.updateDate},
+            #{pojo.remarks},
+            #{pojo.delFlag}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE wsxd_contact_addr
+        <set>
+            <if test="pojo.id != null"> id = #{pojo.id}, </if>
+            <if test="pojo.customerIdNo != null"> customer_id_no = #{pojo.customerIdNo}, </if>
+            <if test="pojo.name != null"> name = #{pojo.name}, </if>
+            <if test="pojo.relation != null"> relation = #{pojo.relation}, </if>
+            <if test="pojo.type != null"> type = #{pojo.type}, </if>
+            <if test="pojo.dataSource != null"> data_source = #{pojo.dataSource}, </if>
+            <if test="pojo.province != null"> province = #{pojo.province}, </if>
+            <if test="pojo.city != null"> city = #{pojo.city}, </if>
+            <if test="pojo.district != null"> district = #{pojo.district}, </if>
+            <if test="pojo.detail != null"> detail = #{pojo.detail}, </if>
+            <if test="pojo.remark != null"> remark = #{pojo.remark}, </if>
+            <if test="pojo.createBy != null"> create_by = #{pojo.createBy}, </if>
+            <if test="pojo.createDate != null"> create_date = #{pojo.createDate}, </if>
+            <if test="pojo.updateBy != null"> update_by = #{pojo.updateBy}, </if>
+            <if test="pojo.updateDate != null"> update_date = #{pojo.updateDate}, </if>
+            <if test="pojo.remarks != null"> remarks = #{pojo.remarks}, </if>
+            <if test="pojo.delFlag != null"> del_flag = #{pojo.delFlag} </if>
+        </set>
+         WHERE id = #{pojo.id}
+    </update>
+
+    <select id="select" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM wsxd_contact_addr
+        <where>
+            <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+            <if test="pojo.customerIdNo != null"> AND customer_id_no = #{pojo.customerIdNo} </if>
+            <if test="pojo.name != null"> AND name = #{pojo.name} </if>
+            <if test="pojo.relation != null"> AND relation = #{pojo.relation} </if>
+            <if test="pojo.type != null"> AND type = #{pojo.type} </if>
+            <if test="pojo.dataSource != null"> AND data_source = #{pojo.dataSource} </if>
+            <if test="pojo.province != null"> AND province = #{pojo.province} </if>
+            <if test="pojo.city != null"> AND city = #{pojo.city} </if>
+            <if test="pojo.district != null"> AND district = #{pojo.district} </if>
+            <if test="pojo.detail != null"> AND detail = #{pojo.detail} </if>
+            <if test="pojo.remark != null"> AND remark = #{pojo.remark} </if>
+            <if test="pojo.createBy != null"> AND create_by = #{pojo.createBy} </if>
+            <if test="pojo.createDate != null"> AND create_date = #{pojo.createDate} </if>
+            <if test="pojo.updateBy != null"> AND update_by = #{pojo.updateBy} </if>
+            <if test="pojo.updateDate != null"> AND update_date = #{pojo.updateDate} </if>
+            <if test="pojo.remarks != null"> AND remarks = #{pojo.remarks} </if>
+            <if test="pojo.delFlag != null"> AND del_flag = #{pojo.delFlag} </if>
+        </where>
+    </select>
+
+    <delete id="delete">
+        DELETE FROM wsxd_contact_addr where id = #{id}
+    </delete>
+
+    <select id="findContactAddrs" resultMap="AllColumnMap">
+        select
+            sd.label as relation,
+            a.name,
+            dt.label as type,
+            a.detail
+        from wsxd_contact_addr a
+        join wsxd_case b
+        on a.customer_id_no = b.customer_id_no
+        LEFT JOIN sys_dict sd
+        ON a.relation=sd.`value`
+        AND sd.type="relationship"
+        LEFT JOIN sys_dict dt
+        ON a.type=dt.`value`
+        AND dt.type="address_type"
+        where b.loan_bill_no = #{loanBillNo}
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

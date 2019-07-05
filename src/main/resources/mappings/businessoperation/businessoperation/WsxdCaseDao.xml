@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdCaseDao">
+    
+	<sql id="wsxdCaseColumns">
+		a.id AS "id",
+		a.data_date AS "dataDate",
+		sd.label AS "appOrg",
+		a.app_org AS "appOrgName",
+		a.department_id AS "departmentId",
+		a.department_name AS "departmentName",
+		sd1.label AS "loanOrgin",
+		a.cust_level AS "custLevel",
+		a.app_no AS "appNo",
+		a.loan_bill_no AS "loanBillNo",
+		a.customer_name AS "customerName",
+		a.customer_id_no AS "customerIdNo",
+		a.manager_id AS "managerId",
+		a.manager_name AS "managerName",
+		a.team_manager_name AS "teamManagerName",
+		a.is_first_overdue AS "isFirstOverdue",
+		a.loan_date AS "loanDate",
+		a.due_date AS "dueDate",
+		a.bill_date AS "billDate",
+		a.loan_terms AS "loanTerms",
+		a.loan_prin AS "loanPrin",
+		a.interest AS "interest",
+		a.is_settle AS "isSettle",
+		a.loan_term_fee AS "loanTermFee",
+		a.account_fee AS "accountFee",
+		a.current_debt AS "currentDebt",
+		a.loan_balance AS "loanBalance",
+		a.last_interest AS "lastInterest",
+		a.last_loan_balance AS "lastLoanBalance",
+		a.last_account_fee AS "lastAccountFee",
+		a.overdue_term AS "overdueTerm",
+		a.overdue_prin AS "overduePrin",
+		a.overdue_int AS "overdueInt",
+		a.overdue_fee AS "overdueFee",
+		a.overdue_account_fee AS "overdueAccountFee",
+		a.overdue_late_fee AS "overdueLateFee",
+		a.overdue_penalty AS "overduePenalty",
+		a.overdue_compound AS "overdueCompound",
+		a.overdue_days AS "overdueDays",
+		a.overdue_amt AS "overdueAmt",
+		a.realtime_overdue_days AS "realtimeOverdueDays",
+		a.realtime_overdue_amt AS "realtimeOverdueAmt",
+		a.app_type AS "appType",
+		a.app_name AS "appName",
+		a.case_type AS "caseType",
+		a.case_status AS "caseStatus",
+		a.present_date AS "presentDate",
+		a.create_by AS "createBy",
+		b.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		b.remind_status AS "status",
+		c.odv_name AS "odvName",
+		c.odv_group_name AS "odvGroupName",
+		a.contract_no AS "contractNo",
+		a.case_label AS "caseLabel",
+		a.overdue_count AS "overdueCount",
+		a.overdue_start_date AS "overdueStartDate",
+		a.overdue_start_term AS "overdueStartTerm",
+		a.appoint_start AS "appointStart",
+		a.appoint_end AS "appointEnd",
+		a.mark1 AS "mark1",
+		a.mark2 AS "mark2"
+	</sql>
+	
+	<sql id="wsxdCaseJoins">
+		LEFT JOIN (
+			SELECT
+				aa.*,sd.label as remind_status
+			FROM
+			(
+				SELECT
+					*
+				FROM
+					wsxd_remind_record
+				ORDER BY
+					update_date DESC
+			) aa
+			LEFT JOIN sys_dict sd ON sd.type = 'remind_status' AND sd.value = aa.status
+			GROUP BY aa.loan_bill_no
+			) b ON a.loan_bill_no = b.loan_bill_no
+		LEFT JOIN (
+			SELECT
+				*
+			FROM
+			(
+				SELECT
+					*
+				FROM
+					wsxd_allocate_hst
+				ORDER BY
+					update_date DESC
+			) bb
+			GROUP BY bb.loan_bill_no
+			) c ON a.loan_bill_no = c.loan_bill_no
+		LEFT JOIN wsxd_contact_phone d ON a.customer_id_no = d.customer_id_no
+		LEFT JOIN sys_dict sd ON a.app_org=sd.value AND sd.type="appOrg"
+		LEFT JOIN sys_dict sd1 ON a.loan_orgin = sd1.value AND sd1.type="loan_orgin"
+	</sql>
+    
+	<select id="get" resultType="WsxdCase">
+		SELECT 
+			<include refid="wsxdCaseColumns"/>
+		FROM wsxd_case a
+		<include refid="wsxdCaseJoins"/>
+		WHERE a.id = #{id}
+        GROUP BY a.loan_bill_no
+	</select>
+	
+	<select id="findList" resultType="WsxdCase">
+		SELECT 
+			<include refid="wsxdCaseColumns"/>
+		FROM wsxd_case a
+		<include refid="wsxdCaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND c.end_date IS NULL
+			<if test="appOrg != null and appOrg != ''">
+				AND a.app_org = #{appOrg}
+			</if>
+			<if test="loanBillNo != null and loanBillNo != ''">
+				AND a.loan_bill_no = #{loanBillNo}
+			</if>
+			<if test="departmentId != null and departmentId != ''">
+				AND a.department_id = #{departmentId}
+			</if>
+			<if test="loanOrgin != null and loanOrgin != ''">
+				AND a.loan_orgin = #{loanOrgin}
+			</if>
+			<if test="appNo != null and appNo != ''">
+				AND a.app_no = #{appNo}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name = #{customerName}
+			</if>
+			<if test="customerIdNo != null and customerIdNo != ''">
+				AND a.customer_id_no LIKE CONCAT('%',#{customerIdNo},'%')
+			</if>
+			<if test="minOverdueDays != null and minOverdueDays != ''">
+				AND a.overdue_days &gt;= #{minOverdueDays}
+			</if>
+			<if test="maxOverdueDays != null and maxOverdueDays != ''">
+				AND a.overdue_days &lt;= #{maxOverdueDays}
+			</if>
+			<if test="status != null and status != ''">
+				AND b.status = #{status}
+			</if>
+			<if test="telephoneNo != null and telephoneNo != ''">
+				AND (b.phone = #{telephoneNo} OR d.phone = #{telephoneNo})
+			</if>
+			<if test="odvName != null and odvName != ''">
+				AND c.odv_name = #{odvName}
+			</if>
+			<if test="managerId != null and managerId != ''">
+				AND a.manager_id = #{managerId}
+			</if>
+			<if test="appName != null and appName != ''">
+				AND a.app_name = #{appName}
+			</if>
+		</where>
+        GROUP BY a.loan_bill_no
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.customer_id_no DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdCase">
+		SELECT 
+			<include refid="wsxdCaseColumns"/>
+		FROM wsxd_case a
+		<include refid="wsxdCaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+        GROUP BY a.loan_bill_no
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_case(
+			id,
+			data_date,
+			app_org,
+			department_id,
+			department_name,
+			loan_orgin,
+			cust_level,
+			app_no,
+			loan_bill_no,
+			customer_name,
+			customer_id_no,
+			manager_id,
+			manager_name,
+			team_manager_name,
+			is_first_overdue,
+			loan_date,
+			due_date,
+			bill_date,
+			loan_terms,
+			loan_prin,
+			interest,
+			is_settle,
+			loan_term_fee,
+			account_fee,
+			current_debt,
+			loan_balance,
+			last_interest,
+			last_loan_balance,
+			last_account_fee,
+			overdue_term,
+			overdue_prin,
+			overdue_int,
+			overdue_fee,
+			overdue_account_fee,
+			overdue_late_fee,
+			overdue_penalty,
+			overdue_compound,
+			overdue_days,
+			overdue_amt,
+			realtime_overdue_days,
+			realtime_overdue_amt,
+			app_type,
+			app_name,
+			case_type,
+			case_status,
+			present_date,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{dataDate},
+			#{appOrg},
+			#{departmentId},
+			#{departmentName},
+			#{loanOrgin},
+			#{custLevel},
+			#{appNo},
+			#{loanBillNo},
+			#{customerName},
+			#{customerIdNo},
+			#{managerId},
+			#{managerName},
+			#{teamManagerName},
+			#{isFirstOverdue},
+			#{loanDate},
+			#{dueDate},
+			#{billDate},
+			#{loanTerms},
+			#{loanPrin},
+			#{interest},
+			#{isSettle},
+			#{loanTermFee},
+			#{accountFee},
+			#{currentDebt},
+			#{loanBalance},
+			#{lastInterest},
+			#{lastLoanBalance},
+			#{lastAccountFee},
+			#{overdueTerm},
+			#{overduePrin},
+			#{overdueInt},
+			#{overdueFee},
+			#{overdueAccountFee},
+			#{overdueLateFee},
+			#{overduePenalty},
+			#{overdueCompound},
+			#{overdueDays},
+			#{overdueAmt},
+			#{realtimeOverdueDays},
+			#{realtimeOverdueAmt},
+			#{appType},
+			#{appName},
+			#{caseType},
+			#{caseStatus},
+			#{presentDate},
+			#{createBy},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_case SET 	
+			data_date = #{dataDate},
+			app_org = #{appOrg},
+			department_id = #{departmentId},
+			department_name = #{departmentName},
+			loan_orgin = #{loanOrgin},
+			cust_level = #{custLevel},
+			app_no = #{appNo},
+			loan_bill_no = #{loanBillNo},
+			customer_name = #{customerName},
+			customer_id_no = #{customerIdNo},
+			manager_id = #{managerId},
+			manager_name = #{managerName},
+			team_manager_name = #{teamManagerName},
+			is_first_overdue = #{isFirstOverdue},
+			loan_date = #{loanDate},
+			due_date = #{dueDate},
+			bill_date = #{billDate},
+			loan_terms = #{loanTerms},
+			loan_prin = #{loanPrin},
+			interest = #{interest},
+			is_settle = #{isSettle},
+			loan_term_fee = #{loanTermFee},
+			account_fee = #{accountFee},
+			current_debt = #{currentDebt},
+			loan_balance = #{loanBalance},
+			last_interest = #{lastInterest},
+			last_loan_balance = #{lastLoanBalance},
+			last_account_fee = #{lastAccountFee},
+			overdue_term = #{overdueTerm},
+			overdue_prin = #{overduePrin},
+			overdue_int = #{overdueInt},
+			overdue_fee = #{overdueFee},
+			overdue_account_fee = #{overdueAccountFee},
+			overdue_late_fee = #{overdueLateFee},
+			overdue_penalty = #{overduePenalty},
+			overdue_compound = #{overdueCompound},
+			overdue_days = #{overdueDays},
+			overdue_amt = #{overdueAmt},
+			realtime_overdue_days = #{realtimeOverdueDays},
+			realtime_overdue_amt = #{realtimeOverdueAmt},
+			app_type = #{appType},
+			app_name = #{appName},
+			case_type = #{caseType},
+			case_status = #{caseStatus},
+			present_date = #{presentDate},
+			update_by = #{updateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_case SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectDepartmentList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.DepartmentVO">
+		SELECT department_id AS departmentId, department_name AS departmentName
+		FROM wsxd_case
+		WHERE del_flag = '0' AND department_name IS NOT NULL
+		GROUP BY department_id
+	</select>
+
+	<select id="selectLoanOrginList" resultType="java.lang.String">
+		SELECT loan_orgin AS loanOrgin
+		FROM wsxd_case
+		WHERE del_flag = '0' AND loan_orgin IS NOT NULL
+		GROUP BY loan_orgin
+	</select>
+
+	<select id="selectManagerList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.ManagerVO">
+		SELECT manager_id AS managerId, manager_name AS managerName
+		FROM wsxd_case
+		WHERE del_flag = '0' AND manager_name IS NOT NULL
+		GROUP BY manager_id
+	</select>
+
+	<select id="selectAppNameList" resultType="java.lang.String">
+		SELECT app_name AS appName
+		FROM wsxd_case
+		WHERE del_flag = '0' AND app_name IS NOT NULL
+		GROUP BY app_name
+	</select>
+
+	<select id="findBaseInfo" resultType="WsxdCase">
+		SELECT
+			a.loan_bill_no,
+			a.customer_name,
+			concat(substring(a.customer_id_no, 1, 10), '********') as customer_id_no,
+			case b.gender
+			when 0 then '男性'
+			when 1 then '女性'
+			else b.gender
+			end as gender,
+			b.company,
+			b.marital_status,
+			b.mate_name,
+			b.mail,
+			a.department_name,
+			concat(substring(b.mate_id_no, 1, 10), '********') as mate_id_no,
+			c.odv_name as odv,
+			a.manager_name,
+			a.app_name,
+			a.realtime_overdue_days,
+			a.overdue_days,
+			a.overdue_compound,
+			a.realtime_overdue_amt,
+			a.overdue_amt,
+			a.overdue_late_fee,
+			a.is_first_overdue,
+			a.overdue_prin,
+			a.overdue_fee,
+			a.overdue_start_date,
+			a.overdue_int,
+			a.loan_balance,
+			a.overdue_count,
+			a.overdue_penalty,
+			a.data_date
+		FROM wsxd_case a
+		left join wsxd_customer_info b
+		on a.customer_id_no = b.customer_id_no
+		left join wsxd_allocate_hst c
+		on a.loan_bill_no = c.loan_bill_no and c.end_date is null
+		where a.loan_bill_no = #{loanBillNo}
+		limit 1
+	</select>
+
+	<select id="findCardInfo" resultType="WsxdCase">
+		select
+			a.loan_bill_no,
+			case a.app_org
+				when 01 then '网商'
+				when 02 then '玖康'
+				when 03 then '分蛋'
+				when 04 then '嘉禾'
+				when 05 then '机构一商润贷'
+			else a.app_org end as app_org,
+			a.app_no,
+			a.loan_prin,
+			a.loan_balance,
+			a.loan_date,
+			a.due_date,
+			a.loan_terms,
+			a.bill_date,
+			a.overdue_start_date,
+			b.bank_card_no
+		from wsxd_case a
+		left join wsxd_customer_info b
+		on a.customer_id_no = b.customer_id_no
+		where a.customer_id_no = (
+			select distinct a.customer_id_no
+			from wsxd_case a
+			where a.loan_bill_no = #{loanBillNo}
+			limit 1
+		)
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

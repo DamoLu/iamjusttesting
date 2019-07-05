@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.businessoperation.businessoperation.dao.WsxdRemindRecordDao">
+    
+	<sql id="wsxdRemindRecordColumns">
+		a.id AS "id",
+		a.loan_bill_no AS "loanBillNo",
+		a.phone AS "phone",
+		a.status AS "status",
+		a.measure AS "measure",
+		a.remind_date AS "remindDate",
+		a.is_remind AS "isRemind",
+		a.promise_date AS "promiseDate",
+		a.promise_amt AS "promiseAmt",
+		a.odv AS "odv",
+		a.create_time AS "createTime",
+		a.odv_group AS "odvGroup",
+		a.phone_status as "phoneStatus",
+		a.recording as "recording",
+		a.source as "source",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdRemindRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdRemindRecord">
+		SELECT 
+			<include refid="wsxdRemindRecordColumns"/>
+		FROM wsxd_remind_record a
+		<include refid="wsxdRemindRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdRemindRecord">
+		SELECT 
+			<include refid="wsxdRemindRecordColumns"/>
+		FROM wsxd_remind_record a
+		<include refid="wsxdRemindRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="loanBillNo != null and loanBillNo != ''">
+				AND a.loan_bill_no = #{loanBillNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdRemindRecord">
+		SELECT 
+			<include refid="wsxdRemindRecordColumns"/>
+		FROM wsxd_remind_record a
+		<include refid="wsxdRemindRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_remind_record(
+			id,
+			loan_bill_no,
+			phone,
+			status,
+			<if test="measure != null and measure != ''">measure,</if>
+			remind_date,
+			is_remind,
+			promise_date,
+			<if test="promiseAmt != null and promiseAmt != ''">promise_amt,</if>
+			odv,
+			create_time,
+			odv_group,
+			phone_status,
+			recording,
+			source,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{loanBillNo},
+			#{phone},
+			#{status},
+			<if test="measure != null and measure != ''">#{measure},</if>
+			#{remindDate},
+			#{isRemind},
+			#{promiseDate},
+			<if test="promiseAmt != null and promiseAmt != ''">#{promiseAmt},</if>
+			#{odv},
+			#{createTime},
+			#{odvGroup},
+			#{phoneStatus},
+			#{recording},
+			#{source},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_remind_record SET 	
+			loan_bill_no = #{loanBillNo},
+			phone = #{phone},
+			status = #{status},
+			measure = #{measure},
+			remind_date = #{remindDate},
+			is_remind = #{isRemind},
+			promise_date = #{promiseDate},
+			promise_amt = #{promiseAmt},
+			odv = #{odv},
+			create_time = #{createTime},
+			odv_group = #{odvGroup},
+			phone_status = #{phoneStatus},
+			recording = #{recording},
+			source = #{source},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wsxd_remind_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectCaseStatusList"  resultType="java.lang.String">
+		SELECT status
+		FROM wsxd_remind_record
+		WHERE del_flag = '0' AND status IS NOT NULL
+		GROUP BY status
+	</select>
+</mapper>

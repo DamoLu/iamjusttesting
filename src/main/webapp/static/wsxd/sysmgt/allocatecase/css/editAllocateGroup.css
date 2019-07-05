@@ -1,0 +1,51 @@
+.filtered-case-scope {
+    height: auto;
+    max-height: 170px;
+    overflow-y: auto;
+}
+.filtered-case-scope .panel{
+    border: none;
+    margin: 0;
+    box-shadow: none;
+}
+.filtered-case-scope .panel-heading{
+    cursor: pointer;
+    padding: 0;
+    font-weight: bold;
+    border: none;
+}
+.filtered-case-scope .panel-body{
+    padding: 0;
+    padding-left: 15px;
+}
+.filtered-case-scope .panel-body .checkbox-item{
+    padding: 3px;
+}
+.filtered-case-scope .panel-body .checkbox-item:hover{
+    background: #f5f5f5;
+}
+.filtered-case-scope .panel-body input{
+    display: none;
+}
+.filtered-case-scope .panel-body label{
+    display: block;
+}
+.filtered-case-scope .panel-body label::before{
+    right: 0;
+    left: auto;
+}
+.filtered-case-scope .panel-body label::after{
+    right: 0;
+    left: auto;
+}
+.bg-color-white {
+    background-color: #fff!important;
+}
+.add-case-scope-model .btn{
+    padding: 6px 12px!important;
+}
+
+.need {
+    color: red;
+    width: 10px;
+}

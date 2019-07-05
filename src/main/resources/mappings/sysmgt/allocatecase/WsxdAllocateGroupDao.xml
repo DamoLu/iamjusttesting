@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.sysmgt.allocatecase.dao.WsxdAllocateGroupDao">
+
+	<resultMap id="AllocateGroupAndScopeMap" type="com.plcs.web.wsxd.sysmgt.allocatecase.entity.WsxdAllocateGroup">
+		<result column="id" property="id"/>
+		<result column="group_name" property="groupName"/>
+		<result column="odvs" property="odvs"/>
+		<result column="odvs_name" property="odvsName"/>
+		<result column="min_overdue_day" property="minOverdueDay"/>
+		<result column="max_overdue_day" property="maxOverdueDay"/>
+		<result column="status" property="status"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+		<association property="createBy" javaType="com.plcs.web.modules.sys.entity.User" >
+			<result column="create_by" property="id" />
+		</association>
+		<association property="updateBy" javaType="com.plcs.web.modules.sys.entity.User" >
+			<result column="update_by" property="id" />
+		</association>
+		<collection property="wsxdAllocateGroupScopeList" ofType="com.plcs.web.wsxd.sysmgt.allocatecase.entity.WsxdAllocateGroupScope">
+			<result column="s_id" property="id"/>
+			<result column="s_group_name" property="groupName"/>
+			<result column="s_group_id" property="groupId"/>
+			<result column="s_app_org" property="appOrg"/>
+			<result column="s_app_org_name" property="appOrgName"/>
+			<result column="s_department_id" property="departmentId"/>
+			<result column="s_department_name" property="departmentName"/>
+			<result column="s_has_common_pool" property="hasCommonPool"/>
+			<result column="s_create_date" property="createDate"/>
+			<result column="s_update_date" property="updateDate"/>
+			<result column="s_remarks" property="remarks"/>
+			<result column="s_del_flag" property="delFlag"/>
+			<association property="createBy" javaType="com.plcs.web.modules.sys.entity.User" >
+				<result column="s_create_by" property="id" />
+			</association>
+			<association property="updateBy" javaType="com.plcs.web.modules.sys.entity.User" >
+				<result column="s_update_by" property="id" />
+			</association>
+		</collection>
+	</resultMap>
+
+	<resultMap id="CaseScopeMap" type="com.plcs.web.wsxd.sysmgt.allocatecase.bo.WsxdCaseScopeBo">
+		<result column="value" property="value"/>
+		<result column="label" property="label"/>
+		<collection column="value" property="list"
+					ofType="com.plcs.web.wsxd.sysmgt.allocatecase.bo.WsxdCaseOfficeBo">
+			<result column="office_id" property="value" />
+			<result column="office_name" property="label" />
+		</collection>
+	</resultMap>
+
+	<sql id="wsxdAllocateGroupColumns">
+		a.id AS "id",
+		a.group_name AS "groupName",
+		a.odvs AS "odvs",
+		a.odvs_name AS "odvsName",
+		a.min_overdue_day AS "minOverdueDay",
+		a.max_overdue_day AS "maxOverdueDay",
+		a.status AS "status",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="wsxdAllocateGroupJoins">
+	</sql>
+    
+	<select id="get" resultMap="AllocateGroupAndScopeMap">
+		SELECT
+		g.*,
+		s.id AS s_id,
+		s.group_name AS s_group_name,
+		s.group_id AS s_group_id,
+		s.app_org AS s_app_org,
+		s.app_org_name AS s_app_org_name,
+		s.department_id AS s_department_id,
+		s.department_name AS s_department_name,
+		s.has_common_pool AS s_has_common_pool,
+		s.create_date as s_create_date,
+		s.update_date as s_update_date
+		FROM
+		wsxd_allocate_group g
+		LEFT JOIN wsxd_allocate_group_scope s ON g.id = s.group_id
+		where
+			g.id = #{id}
+	</select>
+	
+	<select id="findList"  resultMap="AllocateGroupAndScopeMap">
+		SELECT
+		g.*,
+		s.id AS s_id,
+		s.group_name AS s_group_name,
+		s.group_id AS s_group_id,
+		s.app_org AS s_app_org,
+		s.app_org_name AS s_app_org_name,
+		s.department_id AS s_department_id,
+		s.department_name AS s_department_name,
+		s.has_common_pool AS s_has_common_pool,
+		s.create_date as s_create_date,
+		s.update_date as s_update_date
+		FROM
+		wsxd_allocate_group g
+		LEFT JOIN wsxd_allocate_group_scope s ON g.id = s.group_id
+		<where>
+			g.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		group by g.id
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY g.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdAllocateGroup">
+		SELECT 
+			<include refid="wsxdAllocateGroupColumns"/>
+		FROM wsxd_allocate_group a
+		<include refid="wsxdAllocateGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_allocate_group(
+			id,
+			group_name,
+			odvs,
+			odvs_name,
+			min_overdue_day,
+			max_overdue_day,
+			status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{groupName},
+			#{odvs},
+			#{odvsName},
+			#{minOverdueDay},
+			#{maxOverdueDay},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+	<insert id="insertGroup">
+		INSERT INTO wsxd_allocate_group
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> id, </if>
+			<if test="groupName != null"> group_name, </if>
+			<if test="odvs != null"> odvs, </if>
+			<if test="odvsName != null"> odvs_name, </if>
+			<if test="minOverdueDay != null"> min_overdue_day, </if>
+			<if test="maxOverdueDay != null"> max_overdue_day, </if>
+			<if test="status != null"> status, </if>
+			<if test="createBy != null"> create_by, </if>
+			<if test="createDate != null"> create_date, </if>
+			<if test="updateBy != null"> update_by, </if>
+			<if test="updateDate != null"> update_date, </if>
+			<if test="remarks != null"> remarks, </if>
+			<if test="delFlag != null"> del_flag, </if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null"> #{id}, </if>
+			<if test="groupName != null"> #{groupName}, </if>
+			<if test="odvs != null"> #{odvs}, </if>
+			<if test="odvsName != null"> #{odvsName}, </if>
+			<if test="minOverdueDay != null"> #{minOverdueDay}, </if>
+			<if test="maxOverdueDay != null"> #{maxOverdueDay}, </if>
+			<if test="status != null"> #{status}, </if>
+			<if test="createBy != null"> #{createBy.id}, </if>
+			<if test="createDate != null"> #{createDate}, </if>
+			<if test="updateBy != null"> #{updateBy.id}, </if>
+			<if test="updateDate != null"> #{updateDate}, </if>
+			<if test="remarks != null"> #{remarks}, </if>
+			<if test="delFlag != null"> #{delFlag}, </if>
+		</trim>
+	</insert>
+
+
+	<update id="update">
+		UPDATE wsxd_allocate_group
+		<set>
+			<if test="groupName != null"> group_name = #{groupName}, </if>
+			<if test="odvs != null"> odvs = #{odvs}, </if>
+			<if test="odvsName != null"> odvs_name = #{odvsName}, </if>
+			<if test="minOverdueDay != null"> min_overdue_day = #{minOverdueDay}, </if>
+			<if test="maxOverdueDay != null"> max_overdue_day = #{maxOverdueDay}, </if>
+			<if test="status != null"> status = #{status}, </if>
+			<if test="createBy != null"> create_by = #{createBy.id}, </if>
+			<if test="createDate != null"> create_date = #{createDate}, </if>
+			<if test="updateBy != null"> update_by = #{updateBy.id}, </if>
+			<if test="updateDate != null"> update_date = #{updateDate} </if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+	<update id="delete">
+		UPDATE wsxd_allocate_group SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectOdvGroupList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.OdvGroupVO">
+		SELECT id AS odvGroup, group_name AS odvGroupName
+		FROM wsxd_allocate_group
+		WHERE status = '1'  # 当前状态为启用
+		AND del_flag = '0'  # 删除标记为正常
+	</select>
+
+	<select id="selectOdvList" resultType="com.plcs.web.wsxd.businessoperation.businessoperation.vo.OdvOV" parameterType="string">
+		SELECT id, odvs AS odv, odvs_name AS odvName
+		FROM wsxd_allocate_group AS a
+		<where>
+			a.status = '1'
+			and del_flag = '0'
+			<if test="_parameter != null and _parameter != ''.toString()">
+				and a.id = #{_parameter}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectAllocateGroupListAndScope" resultMap="AllocateGroupAndScopeMap">
+		SELECT
+		g.*,
+		s.id AS s_id,
+		s.group_name AS s_group_name,
+		s.group_id AS s_group_id,
+		s.app_org AS s_app_org,
+		s.app_org_name AS s_app_org_name,
+		s.department_id AS s_department_id,
+		s.department_name AS s_department_name,
+		s.has_common_pool AS s_has_common_pool,
+		s.create_by as s_create_by,
+		s.create_date as s_create_date,
+		s.update_by as s_update_by,
+		s.update_date as s_update_date
+		FROM
+		wsxd_allocate_group g
+		LEFT JOIN wsxd_allocate_group_scope s ON g.id = s.group_id
+		<where>
+			<if test="id != null"> AND g.id = #{id} </if>
+			<if test="groupName != null"> AND g.group_name = #{groupName} </if>
+			<if test="odvs != null"> AND g.odvs = #{odvs} </if>
+			<if test="odvsName != null"> AND g.odvs_name = #{odvsName} </if>
+			<if test="minOverdueDay != null"> AND g.min_overdue_day = #{minOverdueDay} </if>
+			<if test="maxOverdueDay != null"> AND g.max_overdue_day = #{maxOverdueDay} </if>
+			<if test="status != null"> AND g.status = #{status} </if>
+			<if test="createBy != null"> AND g.create_by = #{createBy.id} </if>
+			<if test="createDate != null"> AND g.create_date = #{createDate} </if>
+			<if test="updateBy != null"> AND g.update_by = #{updateBy.id} </if>
+			<if test="updateDate != null"> AND g.update_date = #{updateDate} </if>
+			<if test="remarks != null"> AND g.remarks = #{remarks} </if>
+			<if test="delFlag != null"> AND g.del_flag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<select id="selectEnabledGroupListAndScope" resultMap="AllocateGroupAndScopeMap">
+		SELECT
+		g.*,
+		s.id AS s_id,
+		s.group_name AS s_group_name,
+		s.group_id AS s_group_id,
+		s.app_org AS s_app_org,
+		s.app_org_name AS s_app_org_name,
+		s.department_id AS s_department_id,
+		s.department_name AS s_department_name,
+		s.has_common_pool AS s_has_common_pool,
+		s.create_by as s_create_by,
+		s.create_date as s_create_date,
+		s.update_by as s_update_by,
+		s.update_date as s_update_date
+		FROM
+		wsxd_allocate_group g
+		LEFT JOIN wsxd_allocate_group_scope s ON g.id = s.group_id
+		<where>
+			g.status = '1'
+			<if test="id != null"> AND g.id != #{id} </if>
+		</where>
+	</select>
+
+	<select id="selectCaseScopeList" resultMap="CaseScopeMap" >
+		SELECT
+			d.`value`,d.label,
+			CASE WHEN d.`value` = 'app' THEN 'app' ELSE o.`code` END AS office_id,
+			CASE WHEN d.`value` = 'app' THEN 'app' ELSE o.`name` END AS office_name
+		FROM sys_dict as d
+		LEFT JOIN sys_office as o
+		on d.`value` = o.parent_id
+		WHERE d.type='appOrg' and (o.`name` != 'app' or o.name is null)
+    </select>
+</mapper>
