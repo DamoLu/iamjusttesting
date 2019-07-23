@@ -115,7 +115,7 @@ public class LoginController extends BaseController {
 		
 		// 非授权异常，登录失败，验证码加1。
 		if (!UnauthorizedException.class.getName().equals(exception)){
-			model.addAttribute("isValidateCodeLogin", isValidateCodeLogin(username, true, false));
+//			model.addAttribute("isValidateCodeLogin", isValidateCodeLogin(username, true, false));
 		}
 		
 		// 验证失败清空验证码

@@ -2,10 +2,7 @@ package com.plcs.web.wsxd.businessoperation.businessoperation.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plcs.web.common.persistence.DataEntity;
-import com.plcs.web.wsxd.businessoperation.businessoperation.vo.DepartmentVO;
-import com.plcs.web.wsxd.businessoperation.businessoperation.vo.ManagerVO;
-import com.plcs.web.wsxd.businessoperation.businessoperation.vo.OdvGroupVO;
-import com.plcs.web.wsxd.businessoperation.businessoperation.vo.OdvOV;
+import com.plcs.web.wsxd.businessoperation.businessoperation.vo.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
@@ -66,6 +63,8 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 	private String appName;     // 产品名称
 	private String caseType;		// 案件类型(0内催案件,1诉讼仲裁案件,2外包案件)
 	private String caseStatus;		// 案件状态(0逾期,1（正常）结清当期,2结清本笔)
+	private String sourceCore;		//案件来源核心(01:银数、02:安硕、03:创新、C:c金所）
+	private String remindStatus; // 催记状态
 	private String innerType;		// 内催状态(0非理赔非核销,1理赔,2核销)
 	private Date presentDate;		// 当前日期
     private String contractNo; // 合同编号
@@ -89,7 +88,8 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 	private List<String> appOrgList; // 合作机构列表
 	private List<String> loanOrginList; // 放款机构列表
 	private List<String> caseStatusList; // 案件状态列表
-	private List<String> appNameList; // 产品名称列表
+	private List<String> remindStatusList;// 催记状态列表
+	private List<ProductNameVO> productNameList; // 产品名称列表
 	private List<DepartmentVO> departmentList; // 事业部列表
 	private List<OdvOV> odvList; // 催收人员列表
 
@@ -98,6 +98,9 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 	private List<ManagerVO> managerList; // 客户经理列表
 	private String odvGroup; // 处理组Id
 	private String csy; // 催收员
+	private String permissionOdv;
+	private String search; // 是否进行搜索
+	private String find; // 查询功能
 
 	// 业务查看详情-基本信息
 	private String gender; // 性别
@@ -112,6 +115,59 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 
 	private int pageNo;		// 当前页
 	private int pageSize;	// 一页显示条数
+
+    private String dictType; // 字典类型
+	private String dictValue; // 字典编码
+
+	private List<String> appNameList;
+
+	public List<String> getAppNameList() {
+		return appNameList;
+	}
+
+	public void setAppNameList(List<String> appNameList) {
+		this.appNameList = appNameList;
+	}
+
+	public String getFind() {
+		return find;
+	}
+
+	public void setFind(String find) {
+		this.find = find;
+	}
+
+	public String getDictType() {
+        return dictType;
+    }
+
+    public void setDictType(String dictType) {
+        this.dictType = dictType;
+    }
+
+	public String getDictValue() {
+		return dictValue;
+	}
+
+	public void setDictValue(String dictValue) {
+		this.dictValue = dictValue;
+	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
+	}
+
+	public String getPermissionOdv() {
+		return permissionOdv;
+	}
+
+	public void setPermissionOdv(String permissionOdv) {
+		this.permissionOdv = permissionOdv;
+	}
 
 	public int getPageNo() {
 		return pageNo;
@@ -527,6 +583,14 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 		return telephoneNo;
 	}
 
+	public String getSourceCore() {
+		return sourceCore;
+	}
+
+	public void setSourceCore(String sourceCore) {
+		this.sourceCore = sourceCore;
+	}
+
 	public void setTelephoneNo(String telephoneNo) {
 		this.telephoneNo = telephoneNo;
 	}
@@ -667,12 +731,12 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 		this.appName = appName;
 	}
 
-	public List<String> getAppNameList() {
-		return appNameList;
+	public List<ProductNameVO> getProductNameList() {
+		return productNameList;
 	}
 
-	public void setAppNameList(List<String> appNameList) {
-		this.appNameList = appNameList;
+	public void setProductNameList(List<ProductNameVO> productNameList) {
+		this.productNameList = productNameList;
 	}
 
 
@@ -826,5 +890,21 @@ public class WsxdCase extends DataEntity<WsxdCase> {
 
 	public void setSelectAllFlag(boolean selectAllFlag) {
 		this.selectAllFlag = selectAllFlag;
+	}
+
+	public String getRemindStatus() {
+		return remindStatus;
+	}
+
+	public void setRemindStatus(String remindStatus) {
+		this.remindStatus = remindStatus;
+	}
+
+	public List<String> getRemindStatusList() {
+		return remindStatusList;
+	}
+
+	public void setRemindStatusList(List<String> remindStatusList) {
+		this.remindStatusList = remindStatusList;
 	}
 }

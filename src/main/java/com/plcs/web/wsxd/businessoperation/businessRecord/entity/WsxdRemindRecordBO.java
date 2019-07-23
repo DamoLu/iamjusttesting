@@ -1,6 +1,5 @@
 package com.plcs.web.wsxd.businessoperation.businessRecord.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class WsxdRemindRecordBO {
@@ -14,7 +13,7 @@ public class WsxdRemindRecordBO {
 
 	private Date promiseDate;
 
-	private BigDecimal promiseAmt;
+	private String promiseAmt;
 
 	private String phone;
 
@@ -94,11 +93,11 @@ public class WsxdRemindRecordBO {
 		this.promiseDate = promiseDate;
 	}
 
-	public BigDecimal getPromiseAmt() {
+	public String getPromiseAmt() {
 		return promiseAmt;
 	}
 
-	public void setPromiseAmt(BigDecimal promiseAmt) {
+	public void setPromiseAmt(String promiseAmt) {
 		this.promiseAmt = promiseAmt;
 	}
 

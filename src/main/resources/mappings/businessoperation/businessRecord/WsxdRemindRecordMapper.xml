@@ -7,7 +7,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="promise_date" jdbcType="DATE" property="promiseDate" />
-    <result column="promise_amt" jdbcType="DECIMAL" property="promiseAmt" />
+    <result column="promise_amt" jdbcType="VARCHAR" property="promiseAmt" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="phone_status" jdbcType="CHAR" property="phoneStatus" />
     <result column="remind_date" jdbcType="TIMESTAMP" property="remindDate" />
@@ -138,7 +138,7 @@
       update_by, update_date, remarks, 
       del_flag, measure)
     values (#{id,jdbcType=VARCHAR}, #{loanBillNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=VARCHAR}, #{promiseDate,jdbcType=DATE}, #{promiseAmt,jdbcType=DECIMAL}, 
+      #{status,jdbcType=VARCHAR}, #{promiseDate,jdbcType=DATE}, #{promiseAmt,jdbcType=VARCHAR},
       #{phone,jdbcType=VARCHAR}, #{phoneStatus,jdbcType=CHAR}, #{remindDate,jdbcType=TIMESTAMP}, 
       #{isRemind,jdbcType=CHAR}, #{recording,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{odv,jdbcType=VARCHAR}, #{odvName,jdbcType=VARCHAR}, 
       #{odvGroup,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -232,7 +232,7 @@
         #{promiseDate,jdbcType=DATE},
       </if>
       <if test="promiseAmt != null">
-        #{promiseAmt,jdbcType=DECIMAL},
+        #{promiseAmt,jdbcType=VARCHAR},
       </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
@@ -309,7 +309,7 @@
         promise_date = #{record.promiseDate,jdbcType=DATE},
       </if>
       <if test="record.promiseAmt != null">
-        promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+        promise_amt = #{record.promiseAmt,jdbcType=VARCHAR},
       </if>
       <if test="record.phone != null">
         phone = #{record.phone,jdbcType=VARCHAR},
@@ -371,7 +371,7 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=VARCHAR},
       promise_date = #{record.promiseDate,jdbcType=DATE},
-      promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+      promise_amt = #{record.promiseAmt,jdbcType=VARCHAR},
       phone = #{record.phone,jdbcType=VARCHAR},
       phone_status = #{record.phoneStatus,jdbcType=CHAR},
       remind_date = #{record.remindDate,jdbcType=TIMESTAMP},
@@ -399,7 +399,7 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=VARCHAR},
       promise_date = #{record.promiseDate,jdbcType=DATE},
-      promise_amt = #{record.promiseAmt,jdbcType=DECIMAL},
+      promise_amt = #{record.promiseAmt,jdbcType=VARCHAR},
       phone = #{record.phone,jdbcType=VARCHAR},
       phone_status = #{record.phoneStatus,jdbcType=CHAR},
       remind_date = #{record.remindDate,jdbcType=TIMESTAMP},

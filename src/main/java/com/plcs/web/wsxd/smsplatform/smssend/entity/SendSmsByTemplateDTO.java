@@ -1,8 +1,8 @@
 package com.plcs.web.wsxd.smsplatform.smssend.entity;
 
-import java.util.List;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 public class SendSmsByTemplateDTO {
 
@@ -14,6 +14,8 @@ public class SendSmsByTemplateDTO {
 	private String customerPhone;
 	@ApiModelProperty(value = "催收业务员手机号")
 	private String businessPhone;
+	@ApiModelProperty(value = "客户借据号")
+	private String loanBillNo;
 
 	public String getBusinessPhone() {
 		return businessPhone;
@@ -47,6 +49,14 @@ public class SendSmsByTemplateDTO {
 
 	public void setMobiles(List<String> mobiles) {
 		this.mobiles = mobiles;
+	}
+
+	public String getLoanBillNo() {
+		return loanBillNo;
+	}
+
+	public void setLoanBillNo(String loanBillNo) {
+		this.loanBillNo = loanBillNo;
 	}
 
 	@Override

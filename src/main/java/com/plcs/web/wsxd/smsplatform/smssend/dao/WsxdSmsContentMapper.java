@@ -33,7 +33,7 @@ public interface WsxdSmsContentMapper {
 
 	SmsTemplateBO getSmsTemplate(String id);
 
-	CustomerBO getCustomer(CustomerBO bo);
+	List<CustomerBO> getCustomer(CustomerBO bo);
 
 	List<ContactBO> getContacts(@Param("customerIdNo")String customerIdNo);
 

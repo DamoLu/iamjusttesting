@@ -208,7 +208,7 @@ public class WsxdAllocateGroupController extends BaseController {
 				resultVO.setError(AllocateGroupConstants.UPDATE_GROUP_STATUS_FAILED, "更改处理组状态失败");
 			}
 		} else {
-			resultVO.setError(AllocateGroupConstants.UPDATE_GROUP_STATUS_FAILED,"缺少处理部ID");
+			resultVO.setError(AllocateGroupConstants.UPDATE_GROUP_STATUS_FAILED,"缺少处理组ID");
 		}
 		jsonObject.put("success",resultVO.getSuccess());
 		jsonObject.put("code",resultVO.getCode());

@@ -6,6 +6,7 @@ import java.util.UUID;
 public class RandomUtil {
 	public static final String ALLCHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	public static final String LETTERCHAR = "abcdefghijkllmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String SYS_IDENT = "CS";
 
 
 	/**
@@ -15,7 +16,16 @@ public class RandomUtil {
 		return UUID.randomUUID().toString().replace("-", "").toLowerCase();
 	}
 
+	public static String generateSerialNum(){
+		return SYS_IDENT+randomUUID();
+	}
 
+	public static String generateServiceSN(int length){
+		String dateTime=DateUtils.getDate("yyyyMMddHHmmss");
+		int len=length-SYS_IDENT.length()-dateTime.length();
+		String randomStr=generateString(len);
+		return SYS_IDENT+dateTime+randomStr;
+	}
 
 	/**
 	 * 返回一个定长的随机字符串(只包含大小写字母、数字)

@@ -54,6 +54,10 @@ public class WsxdSmsConfigController extends BaseController {
 
 	@RequestMapping(value = "form")
 	public String form(WsxdSmsConfig wsxdSmsConfig, Model model) {
+		List<WsxdSmsConfig> list = wsxdSmsConfigService.findList(wsxdSmsConfig);
+		if (null != list && list.size() == 1) {
+			wsxdSmsConfig = list.get(0);
+		}
 		model.addAttribute("wsxdSmsConfig", wsxdSmsConfig);
 		return "smsplatform/smsplatformconfig/wsxdSmsConfigForm";
 	}

@@ -5,21 +5,22 @@ import com.plcs.web.common.web.BaseController;
 import com.plcs.web.modules.sys.utils.DictUtils;
 import com.plcs.web.wsxd.businessoperation.businessoperation.entity.*;
 import com.plcs.web.wsxd.businessoperation.businessoperation.service.*;
-import com.plcs.web.wsxd.businessoperation.businessoperation.vo.RepayHstVO;
+import com.plcs.web.wsxd.interfaces.yinShu.pojo.dto.deducthst.DeductHst;
+import com.plcs.web.wsxd.interfaces.yinShu.pojo.dto.deducthst.QueryDeductHstResponse;
+import com.plcs.web.wsxd.interfaces.yinShu.pojo.dto.settlehst.SettleHst;
+import com.plcs.web.wsxd.queryroute.RequestService;
+import com.plcs.web.wsxd.queryroute.entity.DeductResult;
+import com.plcs.web.wsxd.queryroute.entity.LoanDetailResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 业务操作查看页面Controller
@@ -42,6 +43,8 @@ public class WsxdCaseInfoController extends BaseController {
     private WsxdCaseService wsxdCaseService;
     @Autowired
     private WsxdRepayHstService wsxdRepayHstService;
+    @Autowired
+    private RequestService requestService;
 
     @Value("${pictures.upload.url}")
     private String picturesUploadURL;
@@ -67,7 +70,7 @@ public class WsxdCaseInfoController extends BaseController {
         model.addAttribute("wsxdContactAddr", new WsxdContactAddr());
         model.addAttribute("wsxdContactPhone", new WsxdContactPhone());
         model.addAttribute("phoneStatusList", DictUtils.getDictListJson("phone_status"));
-        model.addAttribute("caseStatusList", DictUtils.getDictListJson("case_status"));
+        model.addAttribute("remindStatusList", DictUtils.getDictListJson("remind_status"));
         model.addAttribute("caseSourceList", DictUtils.getDictListJson("case_source"));
 
         return "businessoperation/businessoperation/wsxdcaseinfo/wsxdCaseForm";
@@ -108,21 +111,56 @@ public class WsxdCaseInfoController extends BaseController {
         return repayPlanService.findList(new WsxdRepayPlan(){{setLoanBillNo(wsxdCase.getLoanBillNo());}});
     }
 
-    // 还款记录列表
-    @RequestMapping(value = {"findRepayHsts"})
-    @ResponseBody
-    public List<RepayHstVO> findRepayHsts(@RequestBody WsxdCase wsxdCase, HttpServletRequest request, HttpServletResponse response, Model model) {
-        return wsxdRepayHstService.findByLoanBillNo(wsxdCase.getLoanBillNo());
+    @RequestMapping("deductHstList")
+    public String deductHstList(String loanBillNo,HttpServletRequest request, HttpServletResponse response, Model model){
+        WsxdCase wsxdCase = wsxdCaseService.findByLoanBillNo(loanBillNo);
+        Page<DeductHst> page = new Page<>(request,response);
+        page = wsxdCaseService.findDeductHstList(wsxdCase, page);
+        model.addAttribute("page", page);
+        return "businessoperation/businessoperation/wsxdcaseinfo/wsxdDeductHstList";
     }
 
+
     // 结清金额查询列表
-    @RequestMapping(value = {"settleQuery"})
-    @ResponseBody
-    public List<WsxdCase> settleQuery(@RequestBody WsxdCase wsxdCase, HttpServletRequest request, HttpServletResponse response, Model model) {
-        WsxdCase query=new WsxdCase();
-        query.setLoanBillNo(wsxdCase.getLoanBillNo());
-        return wsxdCaseService.findList(query);
+    @RequestMapping(value = "querySettleHst")
+    public String querySettleHst(String loanBillNo, Model model) {
+        WsxdCase wsxdCase = wsxdCaseService.findByLoanBillNo(loanBillNo);
+        Page<SettleHst> page = new Page<>();
+       SettleHst settleHst = wsxdCaseService.querySettleHst(wsxdCase);
+        List<SettleHst> list = new ArrayList<>();
+        if (null != settleHst) {
+            list.add(settleHst);
+            page.setList(list);
+            page.setCount(1);//只会返回一条记录
+        }
+        page.setPageNo(1);
+        page.setPageSize(30);
+        model.addAttribute("page", page);
+        return "businessoperation/businessoperation/wsxdcaseinfo/wsxdSettleHstList";
     }
+
+    // 贷款详情查询
+    @RequestMapping(value = "loanDetailQuery")
+    public String loanDetailQuery(String loanBillNo, Model model) {
+        LoanDetailResult  result=requestService.excuteLoanDetailQuery(loanBillNo);
+        model.addAttribute("loanBillNo",loanBillNo);
+        model.addAttribute("result",result);
+        return "businessoperation/businessoperation/wsxdcaseinfo/wsxdDeduct";
+    }
+
+    // 发送扣款请求
+    @RequestMapping(value = "lanuchDeduct")
+    @ResponseBody
+    public Map lanuchDeduct(  String loanBillNo, String deductAmount, String maxDeductionAmount) {
+        System.out.println(loanBillNo);
+        System.out.println(deductAmount);
+        System.out.println(maxDeductionAmount);
+        BigDecimal amount=new BigDecimal(deductAmount);
+        BigDecimal maxAmount=new BigDecimal(maxDeductionAmount);
+        DeductResult deductResult=requestService.excuteDeduct(loanBillNo,amount,maxAmount);
+        return new HashMap(){{put("msg",deductResult.getDesc());}};
+    }
+
 
     @RequestMapping(value = "addProgress")
     @ResponseBody

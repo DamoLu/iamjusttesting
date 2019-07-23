@@ -54,7 +54,7 @@
 		FROM wsxd_allocate_hst a
 		<include refid="wsxdAllocateHstJoins"/>
 		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
+			a.del_flag = #{DEL_FLAG_NORMAL} and a.allocate_type = '1'
 			<if test="appOrg != null and appOrg != ''">
 				AND a.app_org = #{appOrg}
 			</if>
@@ -82,6 +82,9 @@
 			<if test="odvName != null and odvName != ''">
 				AND a.odv_name = #{odvName}
 			</if>
+			<if test="permissionOdv != null and permissionOdv != ''">
+				AND a.odv = #{permissionOdv}
+			</if>
 			<if test="startOperateDate != null and startOperateDate != ''">
 				AND a.update_date >= #{startOperateDate}
 			</if>
@@ -95,7 +98,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.customer_id_no DESC
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -295,13 +298,13 @@
 			<if test="oldOdvGroupName != null"> #{oldOdvGroupName}, </if>
 			<if test="odvGroup != null"> #{odvGroup}, </if>
 			<if test="odvGroupName != null"> #{odvGroupName}, </if>
-			<if test="startDate != null"> #{startDate}, </if>
+			<if test="startDate != null"> now(), </if>
 			<if test="endDate != null"> #{endDate}, </if>
 			<if test="allocateType != null"> #{allocateType}, </if>
 			<if test="createByUser != null"> #{createByUser}, </if>
-			<if test="createDate != null"> #{createDate}, </if>
+			<if test="createDate != null"> now(), </if>
 			<if test="updateByUser != null"> #{updateByUser}, </if>
-			<if test="updateDate != null"> #{updateDate}, </if>
+			<if test="updateDate != null"> now(), </if>
 			<if test="remarks != null"> #{remarks}, </if>
 			<if test="delFlag != null"> #{delFlag}, </if>
 		</trim>

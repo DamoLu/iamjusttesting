@@ -1,8 +1,6 @@
 package com.plcs.web.wsxd.smsplatform.smssend.service.util;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,7 +12,8 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * HttpClient发送GET、POST请求
@@ -63,11 +62,11 @@ public class SmsSenderHttpClient {
 					jsonResult = JSONObject.parseObject(str);
 //                    jsonResult = new JSONObject().
 				} catch (Exception e) {
-					logger.error("post请求提交失败:" + url, e);
+					logger.error("Parsing SMS response body failed:" + url, e);
 				}
 			}
 		} catch (IOException e) {
-			logger.error("post请求提交失败:" + url, e);
+			logger.error("Send SMS request failed:" + url, e);
 		} finally {
 			httpPost.releaseConnection();
 		}

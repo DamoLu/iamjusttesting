@@ -311,12 +311,13 @@
 
 	<select id="selectCaseScopeList" resultMap="CaseScopeMap" >
 		SELECT
-			d.`value`,d.label,
+			d.`value`,d.label,d.sort,
 			CASE WHEN d.`value` = 'app' THEN 'app' ELSE o.`code` END AS office_id,
 			CASE WHEN d.`value` = 'app' THEN 'app' ELSE o.`name` END AS office_name
 		FROM sys_dict as d
-		LEFT JOIN sys_office as o
-		on d.`value` = o.parent_id
+		LEFT JOIN sys_office as p on d.`value` = p.`code`
+		LEFT JOIN sys_office as o on p.id = o.parent_id
 		WHERE d.type='appOrg' and (o.`name` != 'app' or o.name is null)
+		ORDER BY d.sort
     </select>
 </mapper>

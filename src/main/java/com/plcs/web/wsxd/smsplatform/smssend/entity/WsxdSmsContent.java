@@ -5,6 +5,8 @@ import java.util.Date;
 public class WsxdSmsContent {
     private String id;
 
+    private String loanBillNo;
+
     private String senderId;
 
     private String senderName;
@@ -15,7 +17,7 @@ public class WsxdSmsContent {
 
     private Date sendTime;
 
-    private String status;
+    private Integer status;
 
     private String content;
 
@@ -33,6 +35,14 @@ public class WsxdSmsContent {
 
     public String getId() {
         return id;
+    }
+
+    public String getLoanBillNo() {
+        return loanBillNo;
+    }
+
+    public void setLoanBillNo(String loanBillNo) {
+        this.loanBillNo = loanBillNo;
     }
 
     public void setId(String id) {
@@ -79,12 +89,12 @@ public class WsxdSmsContent {
         this.sendTime = sendTime;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getContent() {

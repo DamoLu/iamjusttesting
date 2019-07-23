@@ -6,7 +6,7 @@ public class WsxdAllocateHstExportDTO {
     private String loanOrgin; // 放款机构
     private String customerName; // 客户姓名
     private String loanBillNo;		// 借据号
-    private String overdueDays; // 逾期天数
+    private Integer overdueDays; // 逾期天数
     private String oldOdvName;		// 旧催收员姓名
     private String oldOdvGroupName; // 旧催收组名
     private String odvName;		// 催收员姓名
@@ -54,11 +54,11 @@ public class WsxdAllocateHstExportDTO {
         this.loanBillNo = loanBillNo;
     }
 
-    public String getOverdueDays() {
+    public Integer getOverdueDays() {
         return overdueDays;
     }
 
-    public void setOverdueDays(String overdueDays) {
+    public void setOverdueDays(Integer overdueDays) {
         this.overdueDays = overdueDays;
     }
 

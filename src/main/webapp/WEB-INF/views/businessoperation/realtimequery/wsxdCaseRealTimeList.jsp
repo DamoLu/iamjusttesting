@@ -91,9 +91,7 @@
                 var hasCheck=($("input[type='checkbox']").is(':checked'));
                 if(!hasCheck){
                     // alert("请选择导出项");
-                    $('#exampleModal').modal({
-                        show:true
-                    });
+                    Common.alert("请选择需要导出的案件数据！");
                     return;
                 }
 
@@ -127,9 +125,9 @@
 </head>
 <body>
 
-<marquee direction="left"  height="50px"   top="100px"  onmouseover="this.stop()" onmouseout="this.start()">
+
     <p style="font-size: 20px;">海尔90天以上数据不支持实时查询，宽限期内逾期金额的数据不准确,请悉知！</p>
-</marquee>
+
 
 <!-- Modal 模态框-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

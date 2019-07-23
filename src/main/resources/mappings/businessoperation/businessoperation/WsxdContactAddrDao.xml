@@ -166,9 +166,9 @@
 
     <select id="findContactAddrs" resultMap="AllColumnMap">
         select
-            sd.label as relation,
+        IFNULL(sd.label,a.relation) as relation,
             a.name,
-            dt.label as type,
+        IFNULL(dt.label,a.type) as type,
             a.detail
         from wsxd_contact_addr a
         join wsxd_case b

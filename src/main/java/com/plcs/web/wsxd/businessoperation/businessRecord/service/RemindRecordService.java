@@ -1,28 +1,19 @@
 package com.plcs.web.wsxd.businessoperation.businessRecord.service;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
+import com.plcs.web.common.utils.IdGen;
+import com.plcs.web.modules.sys.entity.User;
+import com.plcs.web.modules.sys.utils.UserUtils;
+import com.plcs.web.wsxd.businessoperation.businessRecord.dao.WsxdRemindRecordMapper;
+import com.plcs.web.wsxd.businessoperation.businessRecord.entity.*;
+import com.plcs.web.wsxd.smsplatform.smssend.entity.ResultVO;
+import com.plcs.web.wsxd.sysmgt.allocatecase.entity.WsxdAllocateGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.plcs.web.common.utils.IdGen;
-import com.plcs.web.modules.sys.entity.User;
-import com.plcs.web.modules.sys.utils.UserUtils;
-import com.plcs.web.wsxd.businessoperation.businessRecord.dao.WsxdRemindRecordMapper;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.AddRemindRecordDTO;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.GetAllCaseTypeVO;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.GetAllPhoneStatusVO;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.PADImportRemindRecordDTO;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.PADImportRemindRecordResult;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.RemindRecordSourceType;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.SysDictBO;
-import com.plcs.web.wsxd.businessoperation.businessRecord.entity.WsxdRemindRecordBO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.ResultVO;
-import com.plcs.web.wsxd.sysmgt.allocatecase.entity.WsxdAllocateGroup;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class RemindRecordService {
@@ -174,7 +165,7 @@ public class RemindRecordService {
 		}
 		if(dto.getData().getPromiseAmt() != null) {
 			try {
-				po.setPromiseAmt(new BigDecimal(dto.getData().getPromiseAmt()));
+				po.setPromiseAmt(dto.getData().getPromiseAmt());
 			} catch (Exception e) {
 			}
 		}

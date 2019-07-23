@@ -1,9 +1,8 @@
 package com.plcs.web.wsxd.businessoperation.businessRecord.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Date;
 
 public class AddRemindRecordDTO {
 
@@ -30,7 +29,7 @@ public class AddRemindRecordDTO {
 	private Date promiseDate;
 
 	@ApiModelProperty(value = "承诺还款金额")
-	private BigDecimal promiseAmt;
+	private String promiseAmt;
 
 	public String getLoanBillNo() {
 		return loanBillNo;
@@ -88,11 +87,11 @@ public class AddRemindRecordDTO {
 		this.promiseDate = promiseDate;
 	}
 
-	public BigDecimal getPromiseAmt() {
+	public String getPromiseAmt() {
 		return promiseAmt;
 	}
 
-	public void setPromiseAmt(BigDecimal promiseAmt) {
+	public void setPromiseAmt(String promiseAmt) {
 		this.promiseAmt = promiseAmt;
 	}
 

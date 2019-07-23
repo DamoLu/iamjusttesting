@@ -3,12 +3,13 @@
 <mapper namespace="com.plcs.web.wsxd.smsplatform.smssend.dao.WsxdSmsContentMapper">
   <resultMap id="BaseResultMap" type="com.plcs.web.wsxd.smsplatform.smssend.entity.WsxdSmsContent">
     <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="loan_bill_no" jdbcType="VARCHAR" property="loanBillNo" />
     <result column="sender_id" jdbcType="VARCHAR" property="senderId" />
     <result column="sender_name" jdbcType="VARCHAR" property="senderName" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="template_name" jdbcType="VARCHAR" property="templateName" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
-    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
@@ -76,7 +77,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, sender_id, sender_name, phone, template_name, send_time, status, content, create_by, 
+    id, loan_bill_no, sender_id, sender_name, phone, template_name, send_time, status, content, create_by,
     create_date, update_by, update_date, remarks, del_flag
   </sql>
   <select id="selectByExample" parameterType="com.plcs.web.wsxd.smsplatform.smssend.entity.WsxdSmsContentExample" resultMap="BaseResultMap">
@@ -100,14 +101,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.plcs.web.wsxd.smsplatform.smssend.entity.WsxdSmsContent">
-    insert into wsxd_sms_content (id, sender_id, sender_name, 
+    insert into wsxd_sms_content (id, loan_bill_no, sender_id, sender_name,
       phone, template_name, send_time, 
       status, content, create_by, 
       create_date, update_by, update_date, 
       remarks, del_flag)
-    values (#{id,jdbcType=VARCHAR}, #{senderId,jdbcType=VARCHAR}, #{senderName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR},#{loanBillNo,jdbcType=VARCHAR}, #{senderId,jdbcType=VARCHAR}, #{senderName,jdbcType=VARCHAR},
       #{phone,jdbcType=VARCHAR}, #{templateName,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=CHAR}, #{content,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{content,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{remarks,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR})
   </insert>
@@ -116,6 +117,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="loanBillNo != null">
+        loan_bill_no,
       </if>
       <if test="senderId != null">
         sender_id,
@@ -161,6 +165,9 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
+      <if test="loanBillNo != null">
+        #{loanBillNo,jdbcType=VARCHAR},
+      </if>
       <if test="senderId != null">
         #{senderId,jdbcType=VARCHAR},
       </if>
@@ -177,7 +184,7 @@
         #{sendTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
-        #{status,jdbcType=CHAR},
+        #{status,jdbcType=TINYINT},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -230,7 +237,7 @@
         send_time = #{record.sendTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.status != null">
-        status = #{record.status,jdbcType=CHAR},
+        status = #{record.status,jdbcType=TINYINT},
       </if>
       <if test="record.content != null">
         content = #{record.content,jdbcType=VARCHAR},
@@ -266,7 +273,7 @@
       phone = #{record.phone,jdbcType=VARCHAR},
       template_name = #{record.templateName,jdbcType=VARCHAR},
       send_time = #{record.sendTime,jdbcType=TIMESTAMP},
-      status = #{record.status,jdbcType=CHAR},
+      status = #{record.status,jdbcType=TINYINT},
       content = #{record.content,jdbcType=VARCHAR},
       create_by = #{record.createBy,jdbcType=VARCHAR},
       create_date = #{record.createDate,jdbcType=TIMESTAMP},
@@ -336,8 +343,9 @@
     from 
       wsxd_sms_content
     <where>
-      del_flag = "0"
-      and status = "00"
+      1=1
+      and del_flag = "0"
+      and (status = 0)
       and phone = #{phone}
       and create_date &gt; #{startDate}
       and create_date &lt; #{endDate}
@@ -346,7 +354,7 @@
   
   <select id="smsContentPageCount" resultType="Long">
     select 
-      count(*) 
+      count(1)
     from 
       wsxd_sms_content
     <where>
@@ -354,11 +362,8 @@
       <if test="status != null">
         and status = #{status}
       </if>
-      <if test="phoneList != null">
-        and phone in
-        <foreach close=")" collection="phoneList" item="phone" open="(" separator=",">
-          #{phone}
-        </foreach>
+      <if test="loanBillNo != null">
+        and loan_bill_no = #{loanBillNo}
       </if>
       <if test="startDate != null">
         and create_date &gt; #{startDate}
@@ -379,11 +384,8 @@
       <if test="status != null">
         and status = #{status}
       </if>
-      <if test="phoneList != null">
-        and phone in
-        <foreach close=")" collection="phoneList" item="phone" open="(" separator=",">
-          #{phone}
-        </foreach>
+      <if test="loanBillNo != null">
+        and loan_bill_no = #{loanBillNo}
       </if>
       <if test="startDate != null">
         and create_date &gt; #{startDate}

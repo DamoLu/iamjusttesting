@@ -45,6 +45,7 @@ public class WsxdAllocateHst extends DataEntity<WsxdAllocateHst> {
 	private Date endOperateDate; // 结束操作时间
 	private String createByUser; // 创建者
 	private String updateByUser; // 更新者
+	private String permissionOdv;
 
 	private List<String> appOrgList; // 合作机构列表
 	private List<DepartmentVO> departmentList; // 事业部列表
@@ -313,5 +314,13 @@ public class WsxdAllocateHst extends DataEntity<WsxdAllocateHst> {
 
 	public void setUpdateByUser(String updateByUser) {
 		this.updateByUser = updateByUser;
+	}
+
+	public String getPermissionOdv() {
+		return permissionOdv;
+	}
+
+	public void setPermissionOdv(String permissionOdv) {
+		this.permissionOdv = permissionOdv;
 	}
 }

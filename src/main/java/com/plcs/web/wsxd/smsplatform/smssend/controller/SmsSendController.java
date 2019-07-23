@@ -1,26 +1,12 @@
 package com.plcs.web.wsxd.smsplatform.smssend.controller;
  
+import com.plcs.web.wsxd.smsplatform.smssend.entity.*;
+import com.plcs.web.wsxd.smsplatform.smssend.service.SmsSendService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.plcs.web.wsxd.smsplatform.smssend.entity.GetContactsDTO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.GetContactsVO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.GetTemplateDTO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.GetTemplateVO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.GetTemplatesVO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.ResultVO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.SendSmsByTemplateDTO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.SmsContentPageDTO;
-import com.plcs.web.wsxd.smsplatform.smssend.entity.SmsContentPageVO;
-import com.plcs.web.wsxd.smsplatform.smssend.service.SmsSendService;
-
-import io.swagger.annotations.ApiOperation;
 
 @Controller
 @RequestMapping(value = "/sms")
@@ -68,7 +54,8 @@ public class SmsSendController {
 		ResultVO result = smsSendService.sendSmsByTemplate(dto);
 		return result;
 	}
-	
+
+//	@RequiresPermissions("sms:send:view")
 	@RequestMapping(value = "/sendSMSView", method = RequestMethod.GET)
 	public ModelAndView sendSMSView(@RequestParam String loanBillNo) {
 		ModelAndView v = smsSendService.buildSendSmsView(loanBillNo);

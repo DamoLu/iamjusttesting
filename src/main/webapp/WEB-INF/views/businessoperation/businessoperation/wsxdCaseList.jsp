@@ -86,6 +86,7 @@
             $("#statusSelect").val("").select2();
             $("#managerSelect").val("").select2();
             $("#productSelect").val("").select2();
+            $("#caseStatusSelect").val("").select2();
             $(':input,#searchForm')
                 .not(':button, :submit, :reset, :hidden')
                 .val('');
@@ -160,7 +161,7 @@
                 var hasCheck=($("input[type='checkbox']").is(':checked'));
                 if(!hasCheck){
                     // alert("请选择导出项");
-                    Common.alert("请选择要需要导出的逾期案件！");
+                    Common.alert("请选择需要导出的逾期案件！");
                     return;
                 }
 
@@ -221,8 +222,10 @@
 				param.minOverdueDays = $("#minOverdueDays").val();
 				// 最大逾期
                 param.maxOverdueDays = $("#maxOverdueDays").val();
+				// 催记状态
+				param.remindStatus = $("#statusSelect").val();
 				// 案件状态
-				param.status = $("#statusSelect").val();
+				param.caseStatus = $("#caseStatusSelect").val();
 				// 客户经理
 				param.managerId = $("#managerSelect").val();
 				// 产品名称
@@ -274,7 +277,7 @@
                     success: function (result) {
                         if (result.success) {
                             closeTip();
-                            Common.alert("分配成功！", function () {
+                            Common.alert("手工分案成功！", function () {
                                 Common.clearAction();
                                 searchAction();
                             });
@@ -377,24 +380,31 @@
             <li class="clearfix"></li>
         </ul>
         <ul class="ul-form">
-            <li><label style="width: auto">案件状态：&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                <form:select path="status" class="input-medium" id="statusSelect">
+            <li><label style="width: auto">催记状态：&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <form:select path="remindStatus" class="input-medium" id="statusSelect">
                     <form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('remind_status')}" itemValue="value" itemLabel="label" htmlEscape="false"/>
 			</form:select>
             </li>
             <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+			<li><label style="width: auto">案件状态：&nbsp;&nbsp;&nbsp;&nbsp;</label>
+				<form:select path="caseStatus" class="input-medium" id="caseStatusSelect">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('case_status')}" itemValue="value" itemLabel="label" htmlEscape="false"/>
+				</form:select>
+			</li>
+			<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
             <li><label style="width: auto">客户经理：&nbsp;&nbsp;&nbsp;&nbsp;</label>
                 <form:select path="managerId" class="input-medium" id="managerSelect">
                     <form:option value="" label="请选择"/>
                     <form:options items="${wsxdCase.managerList}" itemValue="managerId" itemLabel="managerName" htmlEscape="false"/>
                 </form:select>
             </li>
-            <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
             <li><label style="width: auto">产品名称：&nbsp;&nbsp;&nbsp;&nbsp;</label>
                 <form:select path="appName" class="input-medium" id="productSelect">
                     <form:option value="" label="请选择"/>
-                    <form:options items="${wsxdCase.appNameList}"  htmlEscape="false"/>
+                    <form:options items="${wsxdCase.productNameList}" itemValue="productCode" itemLabel="productName" htmlEscape="false"/>
                 </form:select>
             </li>
             <li class="clearfix"></li>
@@ -446,7 +456,7 @@
 				<th style="text-align: center">操作</th>
 				<th style="text-align: center" class="sort-column a.app_org">合作机构</th>
 				<th style="text-align: center" class="sort-column a.department_name">事业部</th>
-				<th style="text-align: center" class="sort-column sd1.label">放款机构</th>
+				<th style="text-align: center" class="sort-column a.loan_orgin">放款机构</th>
 				<th style="text-align: center" class="sort-column a.app_name">产品名称</th>
 				<th style="text-align: center" class="sort-column a.customer_id_no">客户姓名</th>
 				<th style="text-align: center" class="sort-column a.loan_bill_no">借据编号</th>
@@ -456,7 +466,8 @@
 				<th style="text-align: center" class="sort-column c.odv_name">处理人员</th>
 				<th style="text-align: center" class="sort-column c.odv_group_name">处理组名</th>
 				<th style="text-align: center" class="sort-column b.create_date">最新更催时间</th>
-				<th style="text-align: center" class="sort-column b.remind_status">案件状态</th>
+				<th style="text-align: center" class="sort-column b.remind_status">催记状态</th>
+				<th style="text-align: center" class="sort-column a.case_status">案件状态</th>
 				<shiro:hasPermission name="businessoperation:wsxdCase:edit"><th style="text-align: center">操作</th></shiro:hasPermission>
 			</tr>
 		</thead>
@@ -473,13 +484,13 @@
 					<a href="${ctx}/businessoperation/wsxdCaseInfo/list?loanBillNo=${wsxdCase.loanBillNo}">查看</a>
 				</td>
 				<td style="text-align: center">
-					${wsxdCase.appOrg}
+						${fns:getDictLabel(wsxdCase.appOrg, 'appOrg', wsxdCase.appOrg)}
 				</td>
 				<td style="text-align: center">
 					${wsxdCase.departmentName}
 				</td>
 				<td style="text-align: center">
-					${wsxdCase.loanOrgin}
+						${fns:getDictLabel(wsxdCase.loanOrgin, 'loan_orgin', wsxdCase.loanOrgin)}
 				</td>
 				<td style="text-align: center">
 					${wsxdCase.appName}
@@ -515,7 +526,10 @@
 					<fmt:formatDate value="${wsxdCase.createDate}" pattern="yyyy-MM-dd"/>
 				</td>
 				<td style="text-align: center">
-					${wsxdCase.status}
+						${fns:getDictLabel(wsxdCase.remindStatus, 'remind_status', wsxdCase.remindStatus)}
+				</td>
+				<td style="text-align: center">
+						${fns:getDictLabel(wsxdCase.caseStatus, 'case_status', wsxdCase.caseStatus)}
 				</td>
 				<shiro:hasPermission name="businessoperation:wsxdCase:edit"><td style="text-align: center">
     				<a href="${ctx}/businessoperation/wsxdCase/form?id=${wsxdCase.id}">修改</a>

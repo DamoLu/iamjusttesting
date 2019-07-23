@@ -145,9 +145,9 @@
 
     <select id="findContactPhones" resultMap="AllColumnMap">
         select
-            sd.label as relation,
+            IFNULL(sd.label,a.relation) as relation,
             a.name,
-            dt.label as type,
+            IFNULL(dt.label,a.type) as type,
             a.phone,
             a.remark
         from wsxd_contact_phone a

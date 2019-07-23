@@ -6,9 +6,13 @@ import com.plcs.web.common.utils.DateUtils;
 import com.plcs.web.common.utils.Encodes;
 import com.plcs.web.common.utils.StringUtils;
 import com.plcs.web.common.web.BaseController;
+import com.plcs.web.modules.sys.entity.Role;
+import com.plcs.web.modules.sys.utils.UserUtils;
 import com.plcs.web.wsxd.businessoperation.businessoperation.dto.WsxdAllocateHstExportDTO;
 import com.plcs.web.wsxd.businessoperation.businessoperation.entity.WsxdAllocateHst;
+import com.plcs.web.wsxd.businessoperation.businessoperation.enums.DataScopeEnum;
 import com.plcs.web.wsxd.businessoperation.businessoperation.service.WsxdAllocateHstService;
+import com.plcs.web.wsxd.businessoperation.businessoperation.utils.CompareUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -69,7 +73,31 @@ public class WsxdAllocateHstController extends BaseController {
 	@RequiresPermissions("businessoperation:wsxdAllocateHst:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(WsxdAllocateHst wsxdAllocateHst, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<WsxdAllocateHst> page = wsxdAllocateHstService.findPage(new Page<WsxdAllocateHst>(request, response), wsxdAllocateHst); 
+		// 数据权限控制
+		// 1. 根据登录账户获取对应的角色类型（可能有多个，取最高权限）
+		// 2. 根据角色获取对应的数据范围权限（可能有多个，取最大范围），实际上1、2一起的
+		List<Role> roleList =  UserUtils.getUser().getRoleList();
+		List<String> dataScopes = new ArrayList<>();
+		if (roleList != null && roleList.size() > 0) {
+			for (Role role : roleList) {
+				String dataScope = role.getDataScope();
+				dataScopes.add(dataScope);
+			}
+		}
+		// 3. 根据数据范围权限做限制
+		String dataScope = CompareUtils.getMaxDataScope(dataScopes);
+		if (dataScope.equals(DataScopeEnum.ALL_DATA.getCode())) {
+			// 3.1 统管理员、业务管理员，可以看到所有案件（范围为1）
+
+		} else if (dataScope.equals(DataScopeEnum.BELONG_DEPARTMENT.getCode())) {
+			// 3.2 事业部负责人，看到关于自己所属机构的事业部的所有案件（范围为4）
+			wsxdAllocateHst.setDepartmentId(UserUtils.getUser().getOffice().getCode());
+		} else {
+			// 3.3 其他角色看到自己的案件（范围为8）
+			wsxdAllocateHst.setPermissionOdv(UserUtils.getUser().getLoginName());
+		}
+
+		Page<WsxdAllocateHst> page = wsxdAllocateHstService.findPage(new Page<WsxdAllocateHst>(request, response), wsxdAllocateHst);
 		model.addAttribute("page", page);
 		return "businessoperation/businessoperation/wsxdAllocateHstList";
 	}
@@ -115,6 +143,29 @@ public class WsxdAllocateHstController extends BaseController {
 		List<WsxdAllocateHstExportDTO> wsxdAllocateHstExportDTOList = new ArrayList<>();
 		if(Boolean.valueOf(isAll)){
 			// 如果是全选的话，直接根据搜索条件导出所有的即可
+			// 数据权限控制
+			// 1. 根据登录账户获取对应的角色类型（可能有多个，取最高权限）
+			// 2. 根据角色获取对应的数据范围权限（可能有多个，取最大范围），实际上1、2一起的
+			List<Role> roleList =  UserUtils.getUser().getRoleList();
+			List<String> dataScopes = new ArrayList<>();
+			if (roleList != null && roleList.size() > 0) {
+				for (Role role : roleList) {
+					String dataScope = role.getDataScope();
+					dataScopes.add(dataScope);
+				}
+			}
+			// 3. 根据数据范围权限做限制
+			String dataScope = CompareUtils.getMaxDataScope(dataScopes);
+			if (dataScope.equals(DataScopeEnum.ALL_DATA.getCode())) {
+				// 3.1 统管理员、业务管理员，可以看到所有案件（范围为1）
+
+			} else if (dataScope.equals(DataScopeEnum.BELONG_DEPARTMENT.getCode())) {
+				// 3.2 事业部负责人，看到关于自己所属机构的事业部的所有案件（范围为4）
+				wsxdAllocateHst.setDepartmentId(UserUtils.getUser().getOffice().getCode());
+			} else {
+				// 3.3 其他角色看到自己的案件（范围为8）
+				wsxdAllocateHst.setPermissionOdv(UserUtils.getUser().getLoginName());
+			}
 			wsxdAllocateHstList= wsxdAllocateHstService.findList(wsxdAllocateHst);
 		}else {
 			// 根据复选框Id进行导出

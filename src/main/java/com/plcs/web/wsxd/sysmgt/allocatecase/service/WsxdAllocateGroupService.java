@@ -124,7 +124,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 		    resultVO.setSuccess(true);
 		    return resultVO;
 		}catch (Exception e){
-		    logger.error(WsxdAllocateGroupService.class.getName(),"getGroupAndScope",e.getMessage(),e);
+		    logger.error("获取分案处理组信息异常: ",e);
 		    resultVO.setError(AllocateGroupConstants.GET_GROUP_FAILED,"获取分案处理组信息失败");
 		}
 		return resultVO;
@@ -136,7 +136,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 			resultVO.setResult(roleDao.selectRoleList());
 			resultVO.setSuccess(true);
 		} catch (Exception e){
-			logger.error(WsxdAllocateGroupService.class.getName(),"getRoleList",e.getMessage(),e);
+			logger.error("获取角色列表信息异常: ",e);
 			resultVO.setError(AllocateGroupConstants.GET_ROLE_FAILED,"获取角色列表信息失败");
 		}
 		return resultVO;
@@ -149,7 +149,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 			resultVO.setResult(wsxdAllocateGroupDao.selectCaseScopeList());
 			resultVO.setSuccess(true);
 		} catch (Exception e){
-			logger.error(WsxdAllocateGroupService.class.getName(), "getCaseScopeList", e.getMessage(), e);
+			logger.error("获取案件范围列表异常: " , e);
 			resultVO.setError(AllocateGroupConstants.GET_CASESCOPE_FAILED,"获取案件范围列表失败");
 		}
 		return resultVO;
@@ -198,7 +198,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 			}
 
 		} catch (Exception e) {
-			logger.error(WsxdAllocateGroupService.class.getName(), "insertGroup :   ", e.getMessage());
+			logger.error("新增案件处理组发生异常: ", e);
 			throw new RuntimeException(e);
 		}
 		resultVO.setResult(group.getId());
@@ -292,7 +292,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 				throw new RuntimeException("批量新增处理组案件范围失败");
 			}
 		} catch (Exception e) {
-			logger.error(WsxdAllocateGroupService.class.getName(), "updateGroup :   ", e.getMessage());
+			logger.error("更新案件处理组信息发生异常: ", e);
 			throw new RuntimeException(e);
 		}
 		resultVO.setSuccess(true);
@@ -320,7 +320,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 				return resultVO;
 			}
 		} catch (Exception e) {
-			logger.error(WsxdAllocateGroupService.class.getName(), "updateGroupStatus", e.getMessage(), e);
+			logger.error("获取分案处理组信息异常: ", e);
 			resultVO.setError(AllocateGroupConstants.GET_GROUP_FAILED, "获取分案处理组信息失败");
 			return resultVO;
 		}
@@ -367,7 +367,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 			}
 
 		} catch (Exception e) {
-			logger.error(WsxdAllocateGroupService.class.getName(), "updateGroupStatus :   ", e.getMessage());
+			logger.error("更新案件处理组状态发生异常: ", e);
 			throw new RuntimeException(e);
 		}
 		resultVO.setSuccess(true);
@@ -383,7 +383,7 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
 				return resultVO;
 			}
 		} catch (Exception e){
-			logger.error(WsxdAllocateGroupService.class.getName(), "selectEnabledGroupListAndScope", e.getMessage(), e);
+			logger.error("获取已启用案件处理组列表发生异常: ", e);
 			resultVO.setError(AllocateGroupConstants.GET_ENABLEDGROUP_FAILED,"获取已启用处理组列表失败");
 			return resultVO;
 		}
@@ -419,10 +419,10 @@ public class WsxdAllocateGroupService extends CrudService<WsxdAllocateGroupDao, 
                 for (WsxdAllocateGroup enabledGroup : enabledAllocateGroupList) {
                     for (WsxdAllocateGroupScope enabledScope : enabledGroup.getWsxdAllocateGroupScopeList()) {
                         if (currentScope.getDepartmentId().equals(enabledScope.getDepartmentId())) {
-                            logger.info("当前处理组 {} : {}-{} ",
-                                    currentAllocateGroup.getGroupName(),currentScope.getDepartmentId(),currentScope.getHasCommonPool());
-                            logger.info("已启动处理组 {} : {}-{}",
-                                    enabledGroup.getGroupName(),enabledScope.getDepartmentId(),enabledScope.getHasCommonPool());
+                            logger.info("当前处理组 {} : {}--{}--{} ",
+                                    currentAllocateGroup.getGroupName(),currentScope.getAppOrgName(),currentScope.getDepartmentName(),currentScope.getHasCommonPool());
+                            logger.info("已启动处理组 {} : {}--{}--{}",
+                                    enabledGroup.getGroupName(),enabledScope.getAppOrgName(),enabledScope.getDepartmentName(),enabledScope.getHasCommonPool());
 
                             //if( (currentScope.equals("0") && enabledScope.equals("1")) || (currentScope.equals("1") && enabledScope.equals("0")))
                             if ("2".equals(currentScope.getHasCommonPool()) || "2".equals(enabledScope.getHasCommonPool())

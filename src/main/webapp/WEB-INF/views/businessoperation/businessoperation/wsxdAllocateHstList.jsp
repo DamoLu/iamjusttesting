@@ -49,7 +49,7 @@
 
         // 表头隐藏或显示
         $(function () {
-            $("#operatorList").click(function(){
+            $("#allocateList").click(function(){
                 $("#searchForm").toggle();
                 $("#searchForm1").toggle();
             });
@@ -92,9 +92,7 @@
                 var hasCheck=($("input[type='checkbox']").is(':checked'));
                 if(!hasCheck){
                     // alert("请选择导出项");
-                    $('#exampleModal').modal({
-                        show:true
-                    });
+                    Common.alert("请选择需要导出的分案日志！");
                     return;
                 }
 
@@ -111,7 +109,7 @@
                 $("#isSelectAll").attr("value",selectAllFlag);
                 $("#checkIDArr").attr("value",checkID);
                 $("#searchForm").submit();
-                $("#searchForm").attr("action",'${ctx}/businessoperation/wsxdAllocateHst/form');
+                $("#searchForm").attr("action",'${ctx}/businessoperation/wsxdAllocateHst/');
             });
         });
 
@@ -139,8 +137,8 @@
 	</div>
 
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/businessoperation/wsxdAllocateHst/">手工分案日志列表</a></li>
-		<shiro:hasPermission name="businessoperation:wsxdAllocateHst:edit"><li><a href="${ctx}/businessoperation/wsxdAllocateHst/form">手工分案日志添加</a></li></shiro:hasPermission>
+		<li class="active"><a id="allocateList">手工分案日志列表</a></li>
+		<%--<shiro:hasPermission name="businessoperation:wsxdAllocateHst:edit"><li><a href="${ctx}/businessoperation/wsxdAllocateHst/form">手工分案日志添加</a></li></shiro:hasPermission>--%>
 	</ul>
 	<form:form id="searchForm" modelAttribute="wsxdAllocateHst" action="${ctx}/businessoperation/wsxdAllocateHst/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -248,7 +246,7 @@
 			<th style="text-align: center" class="sort-column a.odv_group_name">现处理组名</th>
 			<th style="text-align: center" class="sort-column a.create_by">操作人</th>
 			<th style="text-align: center" class="sort-column a.create_date">操作时间</th>
-			<shiro:hasPermission name="businessoperation:wsxdCase:edit"><th style="text-align: center">操作</th></shiro:hasPermission>
+			<%--<shiro:hasPermission name="businessoperation:wsxdCase:edit"><th style="text-align: center">操作</th></shiro:hasPermission>--%>
 		</tr>
 		</thead>
 		<tbody>
@@ -296,10 +294,10 @@
 				<td style="text-align: center">
 					<fmt:formatDate value="${wsxdAllocateHst.updateDate}" pattern="yyyy-MM-dd"/>
 				</td>
-				<shiro:hasPermission name="businessoperation:wsxdAllocateHst:edit"><td>
-    				<a href="${ctx}/businessoperation/wsxdAllocateHst/form?id=${wsxdAllocateHst.id}">修改</a>
-					<a href="${ctx}/businessoperation/wsxdAllocateHst/delete?id=${wsxdAllocateHst.id}" onclick="return confirmx('确认要删除该手工分案日志吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>
+				<%--<shiro:hasPermission name="businessoperation:wsxdAllocateHst:edit"><td>--%>
+    				<%--<a href="${ctx}/businessoperation/wsxdAllocateHst/form?id=${wsxdAllocateHst.id}">修改</a>--%>
+					<%--<a href="${ctx}/businessoperation/wsxdAllocateHst/delete?id=${wsxdAllocateHst.id}" onclick="return confirmx('确认要删除该手工分案日志吗？', this.href)">删除</a>--%>
+				<%--</td></shiro:hasPermission>--%>
 			</tr>
 		</c:forEach>
 		</tbody>

@@ -35,7 +35,8 @@
 		</filter>
 
 		<encoder>
-			<pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n %caller{1}</pattern>
+<!--			<pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n %caller{1}</pattern>-->
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger:%L] - %msg%n</pattern>
 			<charset>utf-8</charset>
 		</encoder>
 	</appender>
@@ -58,7 +59,8 @@
 		</filter>
 
 		<encoder>
-			<pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n %caller{1}</pattern>
+<!--			<pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n %caller{1}</pattern>-->
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger:%L] - %msg%n</pattern>
 			<charset>utf-8</charset>
 		</encoder>
 	</appender>
@@ -69,7 +71,8 @@
 			<level>DEBUG</level>
 		</filter>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n %caller{1}</pattern>
+<!--			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n %caller{1}</pattern>-->
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger:%L] - %msg%n</pattern>
 		</encoder>
 	</appender>
 

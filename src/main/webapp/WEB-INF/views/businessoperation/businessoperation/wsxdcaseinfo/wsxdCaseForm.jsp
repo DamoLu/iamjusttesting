@@ -18,13 +18,13 @@
 <ul class="ul-form">
     <button class="btn btn-primary" data-toggle="modal" data-target="#progressModal">添加催记</button>
     <a style="float: right; margin-right: 20px;" href="${ctx}/sms/sendSMSView?loanBillNo=${wsxdCase.loanBillNo}" target="_blank"><button class="btn btn-primary">发送短信</button></a>
-    <a style="float: right; margin-right: 20px;"><button class="btn btn-primary">实时扣款</button></a>
+    <a style="float: right; margin-right: 20px;"><button class="btn btn-primary" onclick="findLoanDetail('${wsxdCase.loanBillNo}')">实时扣款</button></a>
 </ul>
 <table id="totalProgressTable" class="table table-striped table-bordered table-condensed">
     <thead>
     <tr>
         <th>添加时间</th>
-        <th>案件状态</th>
+        <th>催记状态</th>
         <th>承诺还款时间</th>
         <th>承诺还款金额</th>
         <th>电话号码</th>
@@ -40,7 +40,7 @@
     <c:forEach items="${totalProgressPage.list}" var="wsxdRemindRecord">
         <tr>
             <td><fmt:formatDate value="${wsxdRemindRecord.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-            <td>${fns:getDictLabel(wsxdRemindRecord.status, 'case_status', '')}</td>
+            <td>${fns:getDictLabel(wsxdRemindRecord.status, 'remind_status', '')}</td>
             <td><fmt:formatDate value="${wsxdRemindRecord.promiseDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             <td>${wsxdRemindRecord.promiseAmt}</td>
             <td>${wsxdRemindRecord.phone}</td>
@@ -78,13 +78,13 @@
             <td><b>身份证号：</b></td>
             <td>${wsxdCase.customerIdNo}</td>
             <td><b>性别：</b></td>
-            <td>${wsxdCase.gender}</td>
+            <td>${fns:getDictLabel(wsxdCase.gender, 'sex', wsxdCase.gender)}</td>
         </tr>
         <tr>
             <td><b>单位名称：</b></td>
             <td>${wsxdCase.company}</td>
             <td><b>婚姻状况：</b></td>
-            <td>${wsxdCase.maritalStatus}</td>
+            <td>${fns:getDictLabel(wsxdCase.maritalStatus, 'marital_status', wsxdCase.maritalStatus)}</td>
             <td><b>配偶姓名：</b></td>
             <td>${wsxdCase.mateName}</td>
         </tr>
@@ -102,7 +102,7 @@
             <td><b>客户经理（现）：</b></td>
             <td>${wsxdCase.managerName}</td>
             <td><b>产品名称：</b></td>
-            <td>${wsxdCase.appName}</td>
+            <td>${fns:getDictLabel(wsxdCase.appName, 'product_type', wsxdCase.appName)}</td>
         </tr>
 
         <tr><td colspan="6"><br/></td></tr>
@@ -125,7 +125,7 @@
         </tr>
         <tr>
             <td><b>是否首次逾期：</b></td>
-            <td>${wsxdCase.isFirstOverdue}</td>
+            <td>${fns:getDictLabel(wsxdCase.isFirstOverdue, 'is_first_overdue', '')}</td>
             <td><b>数仓逾期本金：</b></td>
             <td>${wsxdCase.overduePrin}</td>
             <td><b>数仓逾期手续费：</b></td>
@@ -196,8 +196,8 @@
             <td>
                 <a onclick="findRepayPlan('${varCase.loanBillNo}')">查看分期信息</a>
                 <a onclick="pictureUpload('${varCase.loanBillNo}')">上传影像信息</a>
-                <a onclick="settleQuery('${varCase.loanBillNo}')">结清金额查询</a>
-                <a onclick="findRepayHst('${varCase.loanBillNo}')">还款记录查询</a>
+                <a onclick="querySettleHst('${varCase.loanBillNo}', '${varCase.sourceCore}')">结清金额查询</a>
+                <a onclick="findDeductHstList('${varCase.loanBillNo}', '${varCase.sourceCore}')">扣款记录查询</a>
             </td>
         </tr>
         </c:forEach>
@@ -295,7 +295,7 @@
                             <input name="loanBillNo" value = "${loanBillNo}" type="hidden"/>
                             <input name="source" value = "1" type="hidden"/>
                             <tr>
-                                <td bgcolor="#EEEEEE"><nobr>案件状态：</nobr></td>
+                                <td bgcolor="#EEEEEE"><nobr>催记状态：</nobr></td>
                                 <td>
                                     <form:select path="status" class="input-xlarge required">
                                         <form:options items="${fns:getDictList('remind_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -582,7 +582,7 @@
 <script type="text/javascript">
     // 联系电话字典map
     var phoneStatusMap = dictListToMap(${phoneStatusList});
-    var caseStatusMap = dictListToMap(${caseStatusList});
+    var remindStatusMap = dictListToMap(${remindStatusList});
     var caseSourceMap = dictListToMap(${caseSourceList});
     var picturesUploadURL = $("#picturesUploadURL").val();
 
@@ -670,7 +670,7 @@
                     $.each(result.list, function (idx, obj) {
                         var tr = '<tr>' +
                             '<td>'+getDefaultValue(obj.createTime)+'</td>' +
-                            '<td>'+getDefaultValue(caseStatusMap[obj.status])+'</td>' +
+                            '<td>'+getDefaultValue(remindStatusMap[obj.status])+'</td>' +
                             '<td>'+getDefaultValue(obj.promiseDate)+'</td>' +
                             '<td>'+getDefaultValue(obj.promiseAmt)+'</td>' +
                             '<td>'+getDefaultValue(obj.phone)+'</td>' +
@@ -918,58 +918,41 @@
         });
     }
 
-    // ajax发送请求查看还款记录信息
-    function findRepayHst(loanBillNo) {
-        loading("正在查询，请稍等...");
-
-        var tbody = $("#repayHstTable tbody");
-        tbody.empty();
-        $.ajax({
-            type: "POST",
-            url: "${ctx}/businessoperation/wsxdCaseInfo/findRepayHsts.json",
-            data: JSON.stringify({"loanBillNo": loanBillNo}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (result) {
-                closeLoading();
-                $.each(result, function (idx, obj) {
-                    var tr = '<tr>' +
-                        '<td style="text-align: center">'+getFormatDate(new Date(getDefaultValue(obj.repayDate)) )+'</td>' +
-                        '<td style="text-align: center">'+getDefaultValue(obj.repayMoney)+'</td>' +
-                        '</tr>';
-                    tbody.append(tr);
-                });
-                $("#repayHstModal").modal("toggle");
-            }
-        });
+    // 发送请求查看还款记录信息
+    function findDeductHstList(loanBillNo,sourceCore) {
+        if (sourceCore == '01' || sourceCore == '02') {
+            top.$.jBox("iframe:"+${ctx} + '/businessoperation/wsxdCaseInfo/deductHstList?loanBillNo=' + loanBillNo,{
+                width: 900,
+                height: 600,
+                title: "扣款记录查询",
+                buttons: { '关闭':true }
+            });
+        }else {
+            alertx("目前只支持银数安硕核心的查询！");
+        }
     }
     // ajax结清金额查询请求
-    function settleQuery(loanBillNo) {
-        loading("正在查询，请稍等...");
+    function querySettleHst(loanBillNo, sourceCore) {
+        if (sourceCore == '01' || sourceCore == '02') {
+            top.$.jBox("iframe:"+${ctx} + '/businessoperation/wsxdCaseInfo/querySettleHst?loanBillNo=' + loanBillNo,{
+                width: 900,
+                height: 600,
+                title: "结清金额查询",
+                buttons: { '关闭':true }
+            });
+        }else {
+            alertx("目前只支持银数安硕核心的查询！");
+        }
 
-        var tbody = $("#settleTable tbody");
-        tbody.empty();
-        $.ajax({
-            type: "POST",
-            url: "${ctx}/businessoperation/wsxdCaseInfo/settleQuery.json",
-            data: JSON.stringify({"loanBillNo": loanBillNo}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (result) {
-                closeLoading();
-                $.each(result, function (idx, obj) {
-                    var tr = '<tr>' +
-                        '<td>'+getDefaultValue(0.00)+'</td>' +
-                        '<td>'+getDefaultValue(obj.loanPrin)+'</td>' +
-                        '<td>'+getDefaultValue(obj.loanTermFee)+'</td>' +
-                        '<td>'+getDefaultValue(obj.overduePenalty)+'</td>' +
-                        '<td>'+getDefaultValue(obj.overdueLateFee)+'</td>' +
-                        '<td></td>' +
-                        '</tr>';
-                    tbody.append(tr);
-                });
-                $("#settleQueryModal").modal("toggle");
-            }
+    }
+
+    // 发送请求查看贷款详情信息
+    function findLoanDetail(loanBillNo) {
+        top.$.jBox("iframe:"+${ctx} + '/businessoperation/wsxdCaseInfo/loanDetailQuery?loanBillNo=' + loanBillNo,{
+            width: 400,
+            height: 300,
+            title: "实时扣款",
+            buttons: { '关闭':true }
         });
     }
 

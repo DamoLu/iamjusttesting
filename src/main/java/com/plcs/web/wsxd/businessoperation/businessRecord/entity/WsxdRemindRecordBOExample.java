@@ -1,6 +1,5 @@
 package com.plcs.web.wsxd.businessoperation.businessRecord.entity;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -473,52 +472,52 @@ public class WsxdRemindRecordBOExample {
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtEqualTo(BigDecimal value) {
+		public Criteria andPromiseAmtEqualTo(String value) {
 			addCriterion("promise_amt =", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtNotEqualTo(BigDecimal value) {
+		public Criteria andPromiseAmtNotEqualTo(String value) {
 			addCriterion("promise_amt <>", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtGreaterThan(BigDecimal value) {
+		public Criteria andPromiseAmtGreaterThan(String value) {
 			addCriterion("promise_amt >", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtGreaterThanOrEqualTo(BigDecimal value) {
+		public Criteria andPromiseAmtGreaterThanOrEqualTo(String value) {
 			addCriterion("promise_amt >=", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtLessThan(BigDecimal value) {
+		public Criteria andPromiseAmtLessThan(String value) {
 			addCriterion("promise_amt <", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtLessThanOrEqualTo(BigDecimal value) {
+		public Criteria andPromiseAmtLessThanOrEqualTo(String value) {
 			addCriterion("promise_amt <=", value, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtIn(List<BigDecimal> values) {
+		public Criteria andPromiseAmtIn(List<String> values) {
 			addCriterion("promise_amt in", values, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtNotIn(List<BigDecimal> values) {
+		public Criteria andPromiseAmtNotIn(List<String> values) {
 			addCriterion("promise_amt not in", values, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtBetween(BigDecimal value1, BigDecimal value2) {
+		public Criteria andPromiseAmtBetween(String value1, String value2) {
 			addCriterion("promise_amt between", value1, value2, "promiseAmt");
 			return (Criteria) this;
 		}
 
-		public Criteria andPromiseAmtNotBetween(BigDecimal value1, BigDecimal value2) {
+		public Criteria andPromiseAmtNotBetween(String value1, String value2) {
 			addCriterion("promise_amt not between", value1, value2, "promiseAmt");
 			return (Criteria) this;
 		}

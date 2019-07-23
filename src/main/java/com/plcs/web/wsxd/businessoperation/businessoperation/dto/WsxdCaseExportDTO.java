@@ -22,7 +22,9 @@ public class WsxdCaseExportDTO {
 	private String odvName; // 处理人名
 	private String odvGroupName; // 处理组名
 	private String createDate;	// 最近更催时间
-	private String status; // 从案件催记中取出的案件状态
+	private String remindStatus; // 从案件催记中取出的催记状态
+	private String caseStatus; // 案件状态
+
 
 	public Integer getOverdueDays() {
 		return overdueDays;
@@ -99,12 +101,12 @@ public class WsxdCaseExportDTO {
 		this.customerName = customerName;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getRemindStatus() {
+		return remindStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setRemindStatus(String remindStatus) {
+		this.remindStatus = remindStatus;
 	}
 
 	public String getOdvGroupName() {
@@ -138,5 +140,13 @@ public class WsxdCaseExportDTO {
 
 	public void setCreateDate(String  createDate) {
 		this.createDate = createDate;
+	}
+
+	public String getCaseStatus() {
+		return caseStatus;
+	}
+
+	public void setCaseStatus(String caseStatus) {
+		this.caseStatus = caseStatus;
 	}
 }

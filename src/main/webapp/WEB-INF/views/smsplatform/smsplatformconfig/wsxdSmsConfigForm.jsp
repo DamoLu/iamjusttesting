@@ -6,6 +6,8 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$("input[id='btnSubmit']").hide();
+			$("#cancel").hide();
 			//$("#name").focus();
 			$("#inputForm").validate({
 				submitHandler: function(form){
@@ -23,12 +25,27 @@
 				}
 			});
 		});
+
+		function edit() {
+			$("input[id='msgCount']").attr("disabled", false);
+			$("#edit").hide();
+			$("#cancel").show();
+			$("input[id='btnSubmit']").show();
+			$(this).parent().parent().parent().find("input[id='btnSubmit']").show();
+		}
+
+		function cancle(msgCount) {
+			$("input[id='msgCount']").attr("disabled", true);
+			$("input[id='msgCount']").val(msgCount);
+			$("#edit").show();
+			$("#cancel").hide();
+			$("input[id='btnSubmit']").hide();
+		}
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/smsplatformconfig/wsxdSmsConfig/">短信平台配置</a></li>
-		<li class="active"><a href="${ctx}/smsplatformconfig/wsxdSmsConfig/form?id=${wsxdSmsConfig.id}">保存短信平台配置成功<shiro:hasPermission name="smsplatformconfig:wsxdSmsConfig:edit">${not empty wsxdSmsConfig.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="smsplatformconfig:wsxdSmsConfig:edit">查看</shiro:lacksPermission></a></li>
+		<li class="active"><a href="${ctx}/smsplatformconfig/wsxdSmsConfig/form?id=${wsxdSmsConfig.id}">短信平台配置</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="wsxdSmsConfig" action="${ctx}/smsplatformconfig/wsxdSmsConfig/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
@@ -44,8 +61,10 @@
 		<div class="control-group">
 			<label class="control-label">每天允许发送的数量：</label>
 			<div class="controls">
-				<form:input path="msgCount" htmlEscape="false" maxlength="11" class="input-xlarge required digits"/>
+				<form:input id="msgCount" path="msgCount" htmlEscape="false" maxlength="11" class="input-xlarge required digits" disabled="true"/>
 				<span class="help-inline"><font color="red">*</font> </span>
+				<a id="edit" class="btn btn-primary" href="javascript:void(0)" onclick="edit()">编辑</a>
+				<a id="cancel" class="btn btn-primary" href="javascript:void(0)" onclick="cancle(${wsxdSmsConfig.msgCount})">取消</a>
 			</div>
 		</div>
 		<div class="form-actions">

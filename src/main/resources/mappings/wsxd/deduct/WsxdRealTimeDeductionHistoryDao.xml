@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plcs.web.wsxd.deduct.dao.WsxdRealTimeDeductionHistoryDao">
+    
+	<sql id="wsxdRealTimeDeductionHistoryColumns">
+		a.id AS "id",
+		a.contract_no AS "contractNo",
+		a.loan_bill_no AS "loanBillNo",
+		a.serial_num AS "serialNum",
+		a.pay_amount AS "payAmount",
+		a.customer_name AS "customerName",
+		a.customer_id_no AS "customerIdNo",
+		a.deduct_amt AS "deductAmt",
+		a.request_status AS "requestStatus",
+		a.deduct_status AS "deductStatus",
+		a.resp_msg AS "respMsg",
+		a.is_partial_deduction AS "isPartialDeduction",
+		a.source_core AS "sourceCore",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.is_delete AS "isDelete"
+	</sql>
+	
+	<sql id="wsxdRealTimeDeductionHistoryJoins">
+	</sql>
+    
+	<select id="get" resultType="WsxdRealTimeDeductionHistory">
+		SELECT 
+			<include refid="wsxdRealTimeDeductionHistoryColumns"/>
+		FROM wsxd_real_time_deduction_history a
+		<include refid="wsxdRealTimeDeductionHistoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WsxdRealTimeDeductionHistory">
+		SELECT 
+			<include refid="wsxdRealTimeDeductionHistoryColumns"/>
+		FROM wsxd_real_time_deduction_history a
+		<include refid="wsxdRealTimeDeductionHistoryJoins"/>
+		<where>
+			
+			<if test="loanBillNo != null and loanBillNo != ''">
+				AND a.loan_bill_no = #{loanBillNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WsxdRealTimeDeductionHistory">
+		SELECT 
+			<include refid="wsxdRealTimeDeductionHistoryColumns"/>
+		FROM wsxd_real_time_deduction_history a
+		<include refid="wsxdRealTimeDeductionHistoryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wsxd_real_time_deduction_history(
+			id,
+			contract_no,
+			loan_bill_no,
+			serial_num,
+			pay_amount,
+			customer_name,
+			customer_id_no,
+			deduct_amt,
+			request_status,
+			deduct_status,
+			resp_msg,
+			is_partial_deduction,
+			source_core,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			is_delete
+		) VALUES (
+			#{id},
+			#{contractNo},
+			#{loanBillNo},
+			#{serialNum},
+			#{payAmount},
+			#{customerName},
+			#{customerIdNo},
+			#{deductAmt},
+			#{requestStatus},
+			#{deductStatus},
+			#{respMsg},
+			#{isPartialDeduction},
+			#{sourceCore},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{isDelete}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wsxd_real_time_deduction_history SET 	
+			contract_no = #{contractNo},
+			loan_bill_no = #{loanBillNo},
+			serial_num = #{serialNum},
+			pay_amount = #{payAmount},
+			customer_name = #{customerName},
+			customer_id_no = #{customerIdNo},
+			deduct_amt = #{deductAmt},
+			request_status = #{requestStatus},
+			deduct_status = #{deductStatus},
+			resp_msg = #{respMsg},
+			is_partial_deduction = #{isPartialDeduction},
+			source_core = #{sourceCore},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			is_delete = #{isDelete}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM wsxd_real_time_deduction_history
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

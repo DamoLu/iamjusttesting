@@ -40,12 +40,7 @@ public class WsxdRealTimeCaseExport {
 	@ExcelField(title="贷款余额", value="loanBalance", sort=80)
 	private BigDecimal loanBalance;		// 贷款余额
 
-
-	@ExcelField(title="处理人名", value="odvName", sort=90)
-	private String odvName; // 处理人名
-	@ExcelField(title="处理组名", value="odvGroupName", sort=100)
-	private String odvGroupName; // 处理组名
-	@ExcelField(title="最近更催时间", value="createDate", sort=110)
+	@ExcelField(title="最近更催时间", value="createDate", sort=90)
 	private Date createDate;	// 最近更催时间
 
 
@@ -119,21 +114,6 @@ public class WsxdRealTimeCaseExport {
 		this.loanBalance = loanBalance;
 	}
 
-	public String getOdvName() {
-		return odvName;
-	}
-
-	public void setOdvName(String odvName) {
-		this.odvName = odvName;
-	}
-
-	public String getOdvGroupName() {
-		return odvGroupName;
-	}
-
-	public void setOdvGroupName(String odvGroupName) {
-		this.odvGroupName = odvGroupName;
-	}
 
 	public Date getCreateDate() {
 		return createDate;

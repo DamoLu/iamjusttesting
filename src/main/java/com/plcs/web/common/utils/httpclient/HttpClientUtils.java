@@ -1,8 +1,10 @@
 package com.plcs.web.common.utils.httpclient;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.plcs.web.common.utils.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -143,7 +146,7 @@ public class HttpClientUtils {
      * @param params
      * @return
      */
-    public   String sendJsonRequest(String redirectUrl, RequestVO params) {
+    public String sendJsonRequest(String redirectUrl, RequestVO params) {
 
         CloseableHttpClient client = createSSLClientDefault();
 
@@ -193,6 +196,46 @@ public class HttpClientUtils {
         }
 
         return "error";
+    }
+
+
+    public JSONObject postJsonRequest(JSONObject jsonObject, String url){
+        JSONObject jsonResult = null;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        // 创建httppost
+        HttpPost httpPost = new HttpPost(url);
+        //设置请求和连接超时时间
+        RequestConfig defaultRequestConfig = RequestConfig.custom().setSocketTimeout(90000)
+                .setConnectTimeout(90000).setConnectionRequestTimeout(90000).build();
+        httpPost.setConfig(defaultRequestConfig);
+        httpPost.setHeader("Content-Type", "application/json");
+        //参数
+        StringEntity entity = new StringEntity(JSON.toJSONString(jsonObject), "utf-8");
+        entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+        httpPost.setEntity(entity);
+
+        try {
+            CloseableHttpResponse result = httpClient.execute(httpPost);
+            // 请求发送成功，并得到响应
+            if (result.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                try {
+                    // 读取服务器返回过来的json字符串数据
+                    String str = EntityUtils.toString(result.getEntity(), StandardCharsets.UTF_8.toString());
+                    // 把json字符串转换成json对象
+                    jsonResult = JSONObject.parseObject(str);
+                } catch (Exception e) {
+                    logger.error("post请求提交失败:" + url, e);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            httpPost.releaseConnection();
+        }
+
+        return jsonResult;
+
     }
 
     /**
@@ -429,6 +472,42 @@ public class HttpClientUtils {
         }
 
         return "error";
+    }
+
+    public static JSONObject httpPost(String url, JSONObject jsonParam) {
+        // post请求返回结果
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        JSONObject jsonResult = null;
+        HttpPost httpPost = new HttpPost(url);
+        // 设置请求和传输超时时间
+        httpPost.setConfig(RequestConfig.custom().setSocketTimeout(2000).setConnectTimeout(2000).build());
+        try {
+            if (null != jsonParam) {
+                StringEntity entity = new StringEntity(jsonParam.toString(), StandardCharsets.UTF_8.toString());
+                entity.setContentEncoding(StandardCharsets.UTF_8.toString());
+                entity.setContentType("application/json");
+                httpPost.setEntity(entity);
+            }
+            CloseableHttpResponse result = httpClient.execute(httpPost);
+            // 请求发送成功，并得到响应
+            if (result.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                String str = "";
+                try {
+                    // 读取服务器返回过来的json字符串数据
+                    str = EntityUtils.toString(result.getEntity(), StandardCharsets.UTF_8.toString());
+                    // 把json字符串转换成json对象
+                    jsonResult = JSONObject.parseObject(str);
+//                    jsonResult = new JSONObject().
+                } catch (Exception e) {
+                    logger.error("post请求提交失败:" + url, e);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("post请求提交失败:" + url, e);
+        } finally {
+            httpPost.releaseConnection();
+        }
+        return jsonResult;
     }
 
 }
